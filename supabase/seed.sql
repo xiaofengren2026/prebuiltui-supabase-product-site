@@ -1,0 +1,44 @@
+insert into public.site_settings (
+  brand_name,
+  hero_title,
+  hero_subtitle,
+  hero_image,
+  hero_primary_button_text,
+  hero_secondary_button_text,
+  brand_intro_title,
+  brand_intro_text,
+  feature_1_title,
+  feature_1_text,
+  feature_2_title,
+  feature_2_text,
+  feature_3_title,
+  feature_3_text,
+  contact_email,
+  instagram_url,
+  kakao_url,
+  whatsapp_url,
+  footer_text
+)
+select
+  '青岚东方饰品',
+  '安静留白里的东方饰品展示',
+  '以淡绿水墨的克制气质呈现手作饰品、幸运绳与小众东方美学产品，让每一件作品都被清楚而安静地看见。',
+  '',
+  '查看产品',
+  '联系我们',
+  '关于品牌',
+  '我们希望把东方审美里的安静、克制与细节感，变成日常也能佩戴的作品。材质、配色与留白都尽量不过度张扬，让产品本身自然说话。',
+  '东方美学设计',
+  '从色调、材质到排版，保持安静克制的东方感。',
+  '手作质感',
+  '重视细节、触感与佩戴时的日常舒适度。',
+  '适合作为礼物',
+  '适合收藏、赠礼与日常搭配的小众配饰。',
+  'hello@example.com',
+  '',
+  '',
+  '',
+  '以简净的东方气质，展示适合长期陈列与分享的手作饰品。'
+where not exists (
+  select 1 from public.site_settings
+);
