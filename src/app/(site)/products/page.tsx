@@ -8,12 +8,7 @@ export default async function ProductsPage() {
 
   return (
     <main className="pb-8">
-      <ProductsCatalog
-        label="全部产品"
-        title="完整产品目录"
-        description="这里会自动显示后台已上架的产品，并按推荐优先和排序值展示。"
-        products={products}
-      />
+      <ProductsCatalog title="东方雅物" products={products} />
     </main>
   );
 }

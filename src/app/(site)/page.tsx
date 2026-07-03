@@ -7,7 +7,6 @@ import { ProductsCatalog } from "@/components/site/products-catalog";
 import { SectionHeading } from "@/components/site/section-heading";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ResponsiveImage } from "@/components/shared/responsive-image";
-import { PRODUCT_EMPTY_MESSAGE } from "@/lib/constants";
 import { getActiveProducts, getFeaturedProducts, getSiteSettings } from "@/lib/site-data";
 import { buildFeatureList } from "@/lib/utils";
 
@@ -109,13 +108,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <ProductsCatalog
-        id="products"
-        label="东方雅物"
-        title="全部产品展示"
-        description="只显示当前已上架的产品，并支持按分类快速筛选浏览。"
-        products={allProducts}
-      />
+      <ProductsCatalog id="products" title="东方雅物" products={allProducts} />
 
       <section id="featured" className="container-shell mt-20">
         <SectionHeading
