@@ -19,6 +19,7 @@ type ProductsCatalogProps = {
   title: string;
   description: string;
   products: Product[];
+  id?: string;
 };
 
 export function ProductsCatalog({
@@ -26,6 +27,7 @@ export function ProductsCatalog({
   title,
   description,
   products,
+  id,
 }: ProductsCatalogProps) {
   const [activeCategory, setActiveCategory] = useState<ProductCategoryFilter>("全部");
 
@@ -41,7 +43,7 @@ export function ProductsCatalog({
   }, [activeCategory, products]);
 
   return (
-    <section className="container-shell mt-16 md:mt-20">
+    <section id={id} className="container-shell mt-16 md:mt-20">
       <SectionHeading label={label} title={title} description={description} />
 
       <div className="mt-8 rounded-[2rem] border border-border bg-white/16 p-5 md:p-6">

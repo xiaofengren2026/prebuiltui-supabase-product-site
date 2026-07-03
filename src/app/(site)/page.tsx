@@ -3,6 +3,7 @@ import { ArrowRight, Mail, MessageCircleMore, Sparkles } from "lucide-react";
 
 import { ContactCards } from "@/components/site/contact-cards";
 import { ProductCard } from "@/components/site/product-card";
+import { ProductsCatalog } from "@/components/site/products-catalog";
 import { SectionHeading } from "@/components/site/section-heading";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ResponsiveImage } from "@/components/shared/responsive-image";
@@ -28,17 +29,17 @@ export default async function HomePage() {
     },
     {
       label: "Instagram",
-      value: settings.instagram_url || "待填写 Instagram 链接",
+      value: settings.instagram_url || "待补充 Instagram 链接",
       href: settings.instagram_url || "#",
     },
     {
       label: "Kakao",
-      value: settings.kakao_url || "待填写 Kakao 链接",
+      value: settings.kakao_url || "待补充 Kakao 链接",
       href: settings.kakao_url || "#",
     },
     {
       label: "WhatsApp",
-      value: settings.whatsapp_url || "待填写 WhatsApp 链接",
+      value: settings.whatsapp_url || "待补充 WhatsApp 链接",
       href: settings.whatsapp_url || "#",
     },
   ];
@@ -90,7 +91,7 @@ export default async function HomePage() {
         <div className="grid gap-6 md:grid-cols-[0.95fr_1.05fr]">
           <div className="section-card px-6 py-8 md:px-8">
             <SectionHeading
-              label="品牌介绍"
+              label="品牌故事"
               title={settings.brand_intro_title}
               description={settings.brand_intro_text}
             />
@@ -99,9 +100,7 @@ export default async function HomePage() {
           <div className="grid gap-4 sm:grid-cols-3">
             {features.map((feature, index) => (
               <article key={feature.title} className="section-card px-5 py-6">
-                <p className="text-xs tracking-[0.14em] text-foreground-muted">
-                  0{index + 1}
-                </p>
+                <p className="text-xs tracking-[0.14em] text-foreground-muted">0{index + 1}</p>
                 <h3 className="mt-4 font-serif text-2xl text-foreground">{feature.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-foreground-muted">{feature.text}</p>
               </article>
@@ -110,11 +109,19 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <ProductsCatalog
+        id="products"
+        label="东方雅物"
+        title="全部产品展示"
+        description="只显示当前已上架的产品，并支持按分类快速筛选浏览。"
+        products={allProducts}
+      />
+
       <section id="featured" className="container-shell mt-20">
         <SectionHeading
-          label="推荐产品"
-          title="精选展示区"
-          description="优先展示后台设置为推荐的产品，让首页第一眼更集中、更有品牌节奏。"
+          label="精选系列"
+          title="推荐产品展示"
+          description="这里只展示后台设置为推荐的产品，不放分类筛选，让重点作品更集中。"
         />
         <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {featuredProducts.length > 0 ? (
@@ -125,23 +132,6 @@ export default async function HomePage() {
                 title="还没有推荐产品"
                 description="去后台把产品标记为推荐后，这里会自动显示。"
               />
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section id="products" className="container-shell mt-20">
-        <SectionHeading
-          label="全部产品"
-          title="按上架状态自动展示"
-          description="前台只显示已上架产品，并按推荐优先、排序值和创建时间进行展示。"
-        />
-        <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {allProducts.length > 0 ? (
-            allProducts.map((product) => <ProductCard key={product.id} product={product} />)
-          ) : (
-            <div className="md:col-span-2 xl:col-span-3">
-              <EmptyState title="暂无产品" description={PRODUCT_EMPTY_MESSAGE} />
             </div>
           )}
         </div>
@@ -173,7 +163,7 @@ export default async function HomePage() {
       <section id="contact" className="container-shell mt-20">
         <div className="section-card px-6 py-8 md:px-8">
           <SectionHeading
-            label="联系方式"
+            label="联系我们"
             title="欢迎通过你常用的方式联系"
             description="这里的邮箱、社交链接和联系方式，都可以在后台网站设置页里直接修改。"
           />
