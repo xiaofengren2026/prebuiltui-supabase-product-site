@@ -12,7 +12,7 @@ import { buildFeatureList } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-const mobileFeatureTitles = ["东方意境", "随身好运", "轻礼之选"];
+const mobileFeatureTitles = ["东方意境设计", "好运随身佩戴", "轻手作礼赠之选"];
 const mobileFeatureTexts = ["东方留白，安静耐看", "轻盈佩戴，寓意温和", "适合赠礼，也适合收藏"];
 
 export default async function HomePage() {
@@ -107,19 +107,19 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-3 gap-3 md:gap-4">
             {features.slice(0, 3).map((feature, index) => (
-              <article key={feature.title} className="section-card px-4 py-4 md:px-5 md:py-6">
-                <p className="text-[11px] tracking-[0.14em] text-foreground-muted md:text-xs">
+              <article key={feature.title} className="section-card px-4 py-4 md:px-5 md:py-5">
+                <p className="text-[10px] tracking-[0.12em] text-foreground-muted md:text-[11px]">
                   0{index + 1}
                 </p>
-                <h3 className="mt-2 font-serif text-base text-foreground md:mt-4 md:text-2xl">
+                <h3 className="mt-2 font-serif text-[15px] leading-5 text-foreground md:mt-3 md:text-xl">
                   <span className="md:hidden">{mobileFeatureTitles[index] ?? feature.title}</span>
                   <span className="hidden md:inline">{feature.title}</span>
                 </h3>
-                <p className="mt-1 text-xs leading-5 text-foreground-muted md:mt-3 md:text-sm md:leading-7">
+                <p className="mt-1 text-xs leading-5 text-foreground-muted md:mt-2 md:text-xs md:leading-6">
                   <span className="line-clamp-1 md:hidden">
                     {mobileFeatureTexts[index] ?? feature.text}
                   </span>
-                  <span className="hidden md:inline">{feature.text}</span>
+                  <span className="line-clamp-1 hidden md:inline">{feature.text}</span>
                 </p>
               </article>
             ))}
@@ -146,29 +146,6 @@ export default async function HomePage() {
               />
             </div>
           )}
-        </div>
-      </section>
-
-      <section className="container-shell mt-14 md:mt-20">
-        <div className="grid gap-4 md:grid-cols-3">
-          <article className="section-card px-5 py-6">
-            <p className="section-label">东方美学设计</p>
-            <p className="mt-5 text-sm leading-8 text-foreground-muted">
-              从配色、材质到产品展示方式，保持安静、留白、克制的视觉秩序。
-            </p>
-          </article>
-          <article className="section-card px-5 py-6">
-            <p className="section-label">手作质感</p>
-            <p className="mt-5 text-sm leading-8 text-foreground-muted">
-              强调触感、佩戴感与细节层次，让每件作品都适合近距离展示。
-            </p>
-          </article>
-          <article className="section-card px-5 py-6">
-            <p className="section-label">适合作为礼物</p>
-            <p className="mt-5 text-sm leading-8 text-foreground-muted">
-              适合礼物、小众收藏和品牌陈列，不做复杂商城，只专注展示本身。
-            </p>
-          </article>
         </div>
       </section>
 
