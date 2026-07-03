@@ -104,27 +104,39 @@ export function buildFeatureList(settings: SiteSettings) {
   ].filter((item) => item.title || item.text);
 }
 
+function isValidEmail(value: string | null | undefined) {
+  return Boolean(value?.trim() && value.includes("@"));
+}
+
+function isValidAbsoluteUrl(value: string | null | undefined) {
+  if (!value?.trim()) {
+    return false;
+  }
+
+  return /^https?:\/\//i.test(value.trim());
+}
+
 export function buildContactItems(settings: SiteSettings): ContactItem[] {
   return [
     {
       label: "Email",
-      value: settings.contact_email,
-      href: `mailto:${settings.contact_email}`,
+      value: settings.contact_email || "待补充邮箱",
+      href: isValidEmail(settings.contact_email) ? `mailto:${settings.contact_email}` : undefined,
     },
     {
       label: "Instagram",
       value: settings.instagram_url || "待补充 Instagram 链接",
-      href: settings.instagram_url || "#",
+      href: isValidAbsoluteUrl(settings.instagram_url) ? settings.instagram_url : undefined,
     },
     {
       label: "Kakao",
       value: settings.kakao_url || "待补充 Kakao 链接",
-      href: settings.kakao_url || "#",
+      href: isValidAbsoluteUrl(settings.kakao_url) ? settings.kakao_url : undefined,
     },
     {
       label: "WhatsApp",
       value: settings.whatsapp_url || "待补充 WhatsApp 链接",
-      href: settings.whatsapp_url || "#",
+      href: isValidAbsoluteUrl(settings.whatsapp_url) ? settings.whatsapp_url : undefined,
     },
   ];
 }

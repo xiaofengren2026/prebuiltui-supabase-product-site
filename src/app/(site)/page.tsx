@@ -8,7 +8,7 @@ import { SectionHeading } from "@/components/site/section-heading";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ResponsiveImage } from "@/components/shared/responsive-image";
 import { getActiveProducts, getFeaturedProducts, getSiteSettings } from "@/lib/site-data";
-import { buildFeatureList } from "@/lib/utils";
+import { buildContactItems, buildFeatureList } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -23,28 +23,7 @@ export default async function HomePage() {
   ]);
 
   const features = buildFeatureList(settings);
-  const contacts = [
-    {
-      label: "Email",
-      value: settings.contact_email,
-      href: `mailto:${settings.contact_email}`,
-    },
-    {
-      label: "Instagram",
-      value: settings.instagram_url || "待补充 Instagram 链接",
-      href: settings.instagram_url || "#",
-    },
-    {
-      label: "Kakao",
-      value: settings.kakao_url || "待补充 Kakao 链接",
-      href: settings.kakao_url || "#",
-    },
-    {
-      label: "WhatsApp",
-      value: settings.whatsapp_url || "待补充 WhatsApp 链接",
-      href: settings.whatsapp_url || "#",
-    },
-  ];
+  const contacts = buildContactItems(settings);
 
   return (
     <main className="pb-8">
@@ -161,11 +140,15 @@ export default async function HomePage() {
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3 text-sm">
-            <a href={`mailto:${settings.contact_email}`} className="primary-button">
-              <Mail size={16} />
-              发送邮件
-            </a>
-            <Link href={settings.whatsapp_url || "#"} className="secondary-button">
+            {settings.contact_email?.includes("@") ? (
+              <a href={`mailto:${settings.contact_email}`} className="primary-button">
+                <Mail size={16} />
+                发送邮件
+              </a>
+            ) : (
+              <span className="primary-button opacity-85">待补充邮箱</span>
+            )}
+            <Link href="/#contact" className="secondary-button">
               <MessageCircleMore size={16} />
               WhatsApp
             </Link>

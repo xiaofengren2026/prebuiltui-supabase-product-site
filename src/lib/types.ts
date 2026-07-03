@@ -45,7 +45,7 @@ export type SiteSettings = {
 export type ContactItem = {
   label: string;
   value: string;
-  href: string;
+  href?: string;
 };
 
 export type FeatureItem = {
