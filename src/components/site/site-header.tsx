@@ -1,36 +1,17 @@
 import Link from "next/link";
 
-import { SITE_NAV_ITEMS } from "@/lib/constants";
-
 type SiteHeaderProps = {
   brandName: string;
 };
 
+const navItems = [
+  { label: "品牌故事", href: "/#brand" },
+  { label: "东方雅物", href: "/#products" },
+  { label: "精选系列", href: "/#featured" },
+  { label: "联系我们", href: "/#contact" },
+];
+
 export function SiteHeader({ brandName }: SiteHeaderProps) {
-  const navItems = SITE_NAV_ITEMS.map((item) => {
-    let label = item.label;
-    let href = item.href;
-
-    if (item.href === "/#brand") {
-      label = "品牌故事";
-    }
-
-    if (item.href === "/#products") {
-      label = "东方雅物";
-    }
-
-    if (item.href === "/#featured") {
-      label = "精选系列";
-    }
-
-    if (item.href === "/#contact") {
-      label = "联系我们";
-      href = "/contact";
-    }
-
-    return { ...item, label, href };
-  });
-
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-xl">
       <div className="container-shell flex h-18 items-center justify-between gap-5 py-4">
@@ -46,7 +27,7 @@ export function SiteHeader({ brandName }: SiteHeaderProps) {
           ))}
         </nav>
 
-        <Link href="/contact" className="secondary-button px-4 py-2 text-sm">
+        <Link href="/#contact" className="secondary-button px-4 py-2 text-sm">
           联系我们
         </Link>
       </div>

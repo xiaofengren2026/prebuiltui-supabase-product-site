@@ -70,7 +70,7 @@ export default async function HomePage() {
                 <ArrowRight size={15} />
               </Link>
               <Link
-                href="/contact"
+                href="/#contact"
                 className="secondary-button px-4 py-2.5 text-sm md:px-6 md:py-3.5 md:text-base"
               >
                 {settings.hero_secondary_button_text}

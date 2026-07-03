@@ -53,9 +53,7 @@ export default async function ProductDetailPage({
               title={product.name}
               description={product.short_description || ""}
             />
-            <p className="mt-6 text-2xl font-semibold text-accent">
-              {formatCurrency(product.price)}
-            </p>
+            <p className="mt-6 text-2xl font-semibold text-accent">{formatCurrency(product.price)}</p>
 
             <div className="mt-6 flex flex-wrap gap-2">
               {product.tags.map((tag) => (
@@ -100,7 +98,7 @@ export default async function ProductDetailPage({
                 <Mail size={16} />
                 邮件联系
               </a>
-              <Link href="/contact" className="secondary-button">
+              <Link href="/#contact" className="secondary-button">
                 查看更多联系方式
               </Link>
             </div>
