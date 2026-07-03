@@ -59,11 +59,11 @@ export default async function HomePage() {
               {settings.hero_subtitle}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="#products" className="primary-button">
+              <Link href="/products" className="primary-button">
                 {settings.hero_primary_button_text}
                 <ArrowRight size={16} />
               </Link>
-              <Link href="#contact" className="secondary-button">
+              <Link href="/contact" className="secondary-button">
                 {settings.hero_secondary_button_text}
               </Link>
             </div>

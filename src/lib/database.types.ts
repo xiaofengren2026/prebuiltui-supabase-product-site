@@ -9,6 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      page_views: {
+        Row: {
+          id: string;
+          path: string;
+          page_type: string;
+          product_id: string | null;
+          product_name: string | null;
+          visitor_id: string;
+          user_agent: string | null;
+          referrer: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          path: string;
+          page_type: string;
+          product_id?: string | null;
+          product_name?: string | null;
+          visitor_id: string;
+          user_agent?: string | null;
+          referrer?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          path?: string;
+          page_type?: string;
+          product_id?: string | null;
+          product_name?: string | null;
+          visitor_id?: string;
+          user_agent?: string | null;
+          referrer?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       products: {
         Row: {
           id: string;

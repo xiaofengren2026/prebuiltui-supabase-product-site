@@ -7,6 +7,18 @@ type SiteHeaderProps = {
 };
 
 export function SiteHeader({ brandName }: SiteHeaderProps) {
+  const navItems = SITE_NAV_ITEMS.map((item) => {
+    if (item.href === "/#products") {
+      return { ...item, href: "/products" };
+    }
+
+    if (item.href === "/#contact") {
+      return { ...item, href: "/contact" };
+    }
+
+    return item;
+  });
+
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-xl">
       <div className="container-shell flex h-18 items-center justify-between gap-5 py-4">
@@ -15,14 +27,14 @@ export function SiteHeader({ brandName }: SiteHeaderProps) {
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm text-foreground-muted md:flex">
-          {SITE_NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <Link key={item.href} href={item.href} className="transition hover:text-foreground">
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <Link href="/#contact" className="secondary-button px-4 py-2 text-sm">
+        <Link href="/contact" className="secondary-button px-4 py-2 text-sm">
           联系我们
         </Link>
       </div>

@@ -6,12 +6,15 @@ import { usePathname } from "next/navigation";
 import { ADMIN_NAV_ITEMS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
+const ANALYTICS_NAV_ITEM = { label: "数据统计", href: "/admin/analytics" };
+
 export function AdminNav() {
   const pathname = usePathname();
+  const items = [...ADMIN_NAV_ITEMS, ANALYTICS_NAV_ITEM];
 
   return (
     <nav className="grid gap-2">
-      {ADMIN_NAV_ITEMS.map((item) => {
+      {items.map((item) => {
         const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
         return (

@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 
-import type { Product, SiteSettings } from "@/lib/types";
+import type { ContactItem, Product, SiteSettings } from "@/lib/types";
 
 export function cn(...inputs: Array<string | false | null | undefined>) {
   return clsx(inputs);
@@ -98,6 +98,31 @@ export function buildFeatureList(settings: SiteSettings) {
       text: settings.feature_3_text,
     },
   ].filter((item) => item.title || item.text);
+}
+
+export function buildContactItems(settings: SiteSettings): ContactItem[] {
+  return [
+    {
+      label: "Email",
+      value: settings.contact_email,
+      href: `mailto:${settings.contact_email}`,
+    },
+    {
+      label: "Instagram",
+      value: settings.instagram_url || "待补充 Instagram 链接",
+      href: settings.instagram_url || "#",
+    },
+    {
+      label: "Kakao",
+      value: settings.kakao_url || "待补充 Kakao 链接",
+      href: settings.kakao_url || "#",
+    },
+    {
+      label: "WhatsApp",
+      value: settings.whatsapp_url || "待补充 WhatsApp 链接",
+      href: settings.whatsapp_url || "#",
+    },
+  ];
 }
 
 export function toProductFormValues(product?: Product | null) {

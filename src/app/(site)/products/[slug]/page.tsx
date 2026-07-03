@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Mail } from "lucide-react";
 import { notFound } from "next/navigation";
 
+import { PageViewTracker } from "@/components/site/page-view-tracker";
 import { ProductGallery } from "@/components/site/product-gallery";
 import { SectionHeading } from "@/components/site/section-heading";
 import { getPublicProductBySlug, getSiteSettings } from "@/lib/site-data";
@@ -32,7 +33,13 @@ export default async function ProductDetailPage({
 
   return (
     <main className="container-shell py-8 md:py-10">
-      <Link href="/#products" className="text-sm text-foreground-muted transition hover:text-foreground">
+      <PageViewTracker
+        path={`/products/${product.slug}`}
+        pageType="product_detail"
+        productId={product.id}
+        productName={product.name}
+      />
+      <Link href="/products" className="text-sm text-foreground-muted transition hover:text-foreground">
         返回产品列表
       </Link>
 
@@ -93,7 +100,7 @@ export default async function ProductDetailPage({
                 <Mail size={16} />
                 邮件联系
               </a>
-              <Link href="/#contact" className="secondary-button">
+              <Link href="/contact" className="secondary-button">
                 查看更多联系方式
               </Link>
             </div>

@@ -51,3 +51,44 @@ export type FeatureItem = {
   title: string;
   text: string;
 };
+
+export type PageView = {
+  id: string;
+  path: string;
+  page_type: string;
+  product_id: string | null;
+  product_name: string | null;
+  visitor_id: string;
+  user_agent: string | null;
+  referrer: string | null;
+  created_at: string;
+};
+
+export type AnalyticsTrendItem = {
+  date: string;
+  label: string;
+  views: number;
+};
+
+export type AnalyticsTopPageItem = {
+  path: string;
+  page_type: string;
+  views: number;
+};
+
+export type AnalyticsTopProductItem = {
+  product_id: string | null;
+  product_name: string | null;
+  views: number;
+};
+
+export type AnalyticsSummary = {
+  todayViews: number;
+  totalViews: number;
+  todayVisitors: number;
+  totalVisitors: number;
+  trend: AnalyticsTrendItem[];
+  topPages: AnalyticsTopPageItem[];
+  topProducts: AnalyticsTopProductItem[];
+  recentVisits: PageView[];
+};
