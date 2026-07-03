@@ -23,6 +23,10 @@ export function ProductGallery({ name, images }: ProductGalleryProps) {
             alt={name}
             className="h-full w-full object-cover"
             fallbackLabel="产品主图待上传"
+            loading="lazy"
+            width={1200}
+            quality={82}
+            sizes="(min-width: 1024px) 50vw, 100vw"
           />
         </div>
       </div>
@@ -45,6 +49,10 @@ export function ProductGallery({ name, images }: ProductGalleryProps) {
                   alt={`${name} 缩略图 ${index + 1}`}
                   className="h-full w-full object-cover"
                   fallbackLabel="图片"
+                  loading="lazy"
+                  width={240}
+                  quality={72}
+                  sizes="25vw"
                 />
               </div>
             </button>

@@ -23,6 +23,10 @@ export function ProductCard({ product }: ProductCardProps) {
           alt={product.name}
           className="transition duration-500 group-hover:scale-[1.03]"
           fallbackLabel="产品图片待上传"
+          loading="lazy"
+          width={640}
+          quality={76}
+          sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
         />
       </div>
 
