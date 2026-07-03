@@ -5,11 +5,16 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { Product, SiteSettings } from "@/lib/types";
 import { mapProductRowToProduct, mergeSettings } from "@/lib/utils";
 
+const DEFAULT_BRAND_NAME = "青岚东方美学";
+
 export async function getSiteSettings(): Promise<SiteSettings> {
   const supabase = await createServerSupabaseClient();
 
   if (!supabase) {
-    return DEFAULT_SITE_SETTINGS;
+    return {
+      ...DEFAULT_SITE_SETTINGS,
+      brand_name: DEFAULT_BRAND_NAME,
+    };
   }
 
   const { data, error } = await supabase
@@ -20,10 +25,19 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     .maybeSingle();
 
   if (error) {
-    return DEFAULT_SITE_SETTINGS;
+    return {
+      ...DEFAULT_SITE_SETTINGS,
+      brand_name: DEFAULT_BRAND_NAME,
+    };
   }
 
-  return mergeSettings(DEFAULT_SITE_SETTINGS, data ?? undefined);
+  return mergeSettings(
+    {
+      ...DEFAULT_SITE_SETTINGS,
+      brand_name: DEFAULT_BRAND_NAME,
+    },
+    data ?? undefined,
+  );
 }
 
 export async function getActiveProducts(): Promise<Product[]> {

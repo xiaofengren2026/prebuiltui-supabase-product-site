@@ -16,8 +16,8 @@ const notoSerif = Noto_Serif_SC({
 });
 
 export const metadata: Metadata = {
-  title: "PrebuiltUI Supabase Product Site",
-  description: "A calm and premium product showcase website built with Next.js and Supabase.",
+  title: "青岚东方美学",
+  description: "东方美学饰品展示网站",
 };
 
 export default function RootLayout({
