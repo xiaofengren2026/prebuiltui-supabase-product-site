@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { ResponsiveImage } from "@/components/shared/responsive-image";
+import { DEFAULT_PRODUCT_CATEGORY, normalizeProductCategory } from "@/lib/product-categories";
 import type { Product } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
@@ -9,6 +10,8 @@ type ProductCardProps = {
 };
 
 export function ProductCard({ product }: ProductCardProps) {
+  const category = normalizeProductCategory(product.category || DEFAULT_PRODUCT_CATEGORY);
+
   return (
     <Link
       href={`/products/${product.slug}`}
@@ -25,10 +28,14 @@ export function ProductCard({ product }: ProductCardProps) {
 
       <div className="flex flex-1 flex-col px-5 py-5">
         <div className="flex items-start justify-between gap-4">
-          <h3 className="font-serif text-2xl text-foreground">{product.name}</h3>
-          <span className="text-sm font-semibold text-accent">
-            {formatCurrency(product.price)}
-          </span>
+          <div className="space-y-3">
+            <span className="inline-flex rounded-full border border-border bg-tag px-3 py-1 text-xs text-foreground">
+              {category}
+            </span>
+            <h3 className="font-serif text-2xl text-foreground">{product.name}</h3>
+          </div>
+
+          <span className="text-sm font-semibold text-accent">{formatCurrency(product.price)}</span>
         </div>
 
         <p className="mt-3 flex-1 text-sm leading-7 text-foreground-muted">
