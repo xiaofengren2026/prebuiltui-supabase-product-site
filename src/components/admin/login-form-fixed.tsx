@@ -51,6 +51,7 @@ export function LoginFormFixed() {
 
       const response = await fetch("/auth/session", {
         method: "POST",
+        credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
         },

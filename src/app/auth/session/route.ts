@@ -27,6 +27,13 @@ export async function POST(request: Request) {
   }
 
   const cookieStore = await cookies();
+  const response = NextResponse.json({ ok: true });
+  const cookiesToWrite: Array<{
+    name: string;
+    value: string;
+    options?: Record<string, unknown>;
+  }> = [];
+  const isSecure = request.url.startsWith("https://");
   const supabase = createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll() {
@@ -34,7 +41,11 @@ export async function POST(request: Request) {
       },
       setAll(cookiesToSet) {
         cookiesToSet.forEach(({ name, value, options }) => {
-          cookieStore.set(name, value, options);
+          cookiesToWrite.push({
+            name,
+            value,
+            options,
+          });
         });
       },
     },
@@ -61,5 +72,17 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ ok: true });
+  cookiesToWrite.forEach(({ name, value, options }) => {
+    response.cookies.set({
+      name,
+      value,
+      httpOnly: true,
+      path: "/",
+      sameSite: "lax",
+      secure: isSecure,
+      ...(options ?? {}),
+    });
+  });
+
+  return response;
 }

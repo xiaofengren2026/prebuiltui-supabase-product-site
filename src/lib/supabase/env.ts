@@ -1,3 +1,5 @@
+const DEFAULT_ADMIN_EMAIL = "xiaofengren2026@163.com";
+
 export function hasSupabaseEnv() {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -20,5 +22,5 @@ export function getSupabaseEnv() {
 }
 
 export function getAdminEmail() {
-  return process.env.ADMIN_EMAIL?.trim().toLowerCase() ?? "";
+  return process.env.ADMIN_EMAIL?.trim().toLowerCase() || DEFAULT_ADMIN_EMAIL;
 }
