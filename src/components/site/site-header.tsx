@@ -8,15 +8,33 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ brandName }: SiteHeaderProps) {
   const navItems = SITE_NAV_ITEMS.map((item) => {
+    let label = item.label;
+
+    if (item.href === "/#brand") {
+      label = "品牌故事";
+    }
+
+    if (item.href === "/#featured") {
+      label = "东方雅物";
+    }
+
     if (item.href === "/#products") {
-      return { ...item, href: "/products" };
+      label = "精选系列";
     }
 
     if (item.href === "/#contact") {
-      return { ...item, href: "/contact" };
+      label = "联系我们";
     }
 
-    return item;
+    if (item.href === "/#products") {
+      return { ...item, label, href: "/products" };
+    }
+
+    if (item.href === "/#contact") {
+      return { ...item, label, href: "/contact" };
+    }
+
+    return { ...item, label };
   });
 
   return (
