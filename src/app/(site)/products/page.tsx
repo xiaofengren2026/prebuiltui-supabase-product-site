@@ -1,4 +1,4 @@
-import { ProductsSection } from "@/components/site/products-section";
+import { ProductsCatalog } from "@/components/site/products-catalog";
 import { getActiveProducts } from "@/lib/site-data";
 
 export const dynamic = "force-dynamic";
@@ -8,7 +8,7 @@ export default async function ProductsPage() {
 
   return (
     <main className="pb-8">
-      <ProductsSection
+      <ProductsCatalog
         label="全部产品"
         title="完整产品目录"
         description="这里会自动显示后台已上架的产品，并按推荐优先和排序值展示。"

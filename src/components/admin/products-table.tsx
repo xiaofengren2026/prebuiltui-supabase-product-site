@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import type { Database } from "@/lib/database.types";
-import type { Product } from "@/lib/types";
+import { DEFAULT_PRODUCT_CATEGORY, normalizeProductCategory } from "@/lib/product-categories";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import type { Product } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
 type ProductsTableProps = {
@@ -29,12 +30,10 @@ export function ProductsTable({ initialProducts }: ProductsTableProps) {
       const updates: Pick<
         Database["public"]["Tables"]["products"]["Update"],
         "is_active" | "is_featured"
-      > = {
-        [field]: nextValue,
-      } as Pick<
-        Database["public"]["Tables"]["products"]["Update"],
-        "is_active" | "is_featured"
-      >;
+      > =
+        field === "is_active"
+          ? { is_active: nextValue }
+          : { is_featured: nextValue };
       const { error } = await supabase
         .from("products")
         .update(updates)
@@ -46,9 +45,7 @@ export function ProductsTable({ initialProducts }: ProductsTableProps) {
       }
 
       setProducts((current) =>
-        current.map((item) =>
-          item.id === product.id ? { ...item, [field]: nextValue } : item,
-        ),
+        current.map((item) => (item.id === product.id ? { ...item, [field]: nextValue } : item)),
       );
       router.refresh();
     } finally {
@@ -104,6 +101,7 @@ export function ProductsTable({ initialProducts }: ProductsTableProps) {
           <thead className="bg-white/16 text-foreground-muted">
             <tr>
               <th className="px-6 py-4 font-medium">产品</th>
+              <th className="px-6 py-4 font-medium">分类</th>
               <th className="px-6 py-4 font-medium">价格</th>
               <th className="px-6 py-4 font-medium">上架</th>
               <th className="px-6 py-4 font-medium">推荐</th>
@@ -118,6 +116,9 @@ export function ProductsTable({ initialProducts }: ProductsTableProps) {
                   <div className="font-medium text-foreground">{product.name}</div>
                   <div className="mt-1 text-xs text-foreground-muted">{product.slug}</div>
                 </td>
+                <td className="px-6 py-4 text-foreground">
+                  {normalizeProductCategory(product.category || DEFAULT_PRODUCT_CATEGORY)}
+                </td>
                 <td className="px-6 py-4 text-foreground">{formatCurrency(product.price)}</td>
                 <td className="px-6 py-4">
                   <button
@@ -125,9 +126,7 @@ export function ProductsTable({ initialProducts }: ProductsTableProps) {
                     onClick={() => toggleField(product, "is_active")}
                     disabled={busyId === product.id}
                     className={`rounded-full px-3 py-1 text-xs ${
-                      product.is_active
-                        ? "bg-accent text-button-text"
-                        : "bg-tag text-foreground-muted"
+                      product.is_active ? "bg-accent text-button-text" : "bg-tag text-foreground-muted"
                     }`}
                   >
                     {product.is_active ? "已上架" : "已下架"}

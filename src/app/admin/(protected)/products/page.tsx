@@ -14,7 +14,7 @@ export default async function AdminProductsPage() {
       <div className="grid gap-6">
         <EmptyState
           title="还没有产品"
-          description="点击“新增产品”后，填写产品信息并上传图片，首页就可以开始展示。"
+          description="点击“新增产品”后，填写产品信息并上传图片，前台页面就可以开始展示。"
         />
         <div>
           <Link href="/admin/products/new" className="primary-button">

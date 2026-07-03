@@ -1,5 +1,6 @@
 import { clsx } from "clsx";
 
+import { DEFAULT_PRODUCT_CATEGORY, normalizeProductCategory } from "@/lib/product-categories";
 import type { ContactItem, Product, SiteSettings } from "@/lib/types";
 
 export function cn(...inputs: Array<string | false | null | undefined>) {
@@ -49,6 +50,9 @@ export function mapProductRowToProduct(row: Record<string, unknown>): Product {
     name: String(row.name ?? ""),
     slug: String(row.slug ?? ""),
     price: Number(row.price ?? 0),
+    category: normalizeProductCategory(
+      typeof row.category === "string" ? row.category : DEFAULT_PRODUCT_CATEGORY,
+    ),
     short_description:
       typeof row.short_description === "string" ? row.short_description : null,
     description: typeof row.description === "string" ? row.description : null,
@@ -129,6 +133,7 @@ export function toProductFormValues(product?: Product | null) {
   return {
     name: product?.name ?? "",
     price: product?.price ? String(product.price) : "",
+    category: normalizeProductCategory(product?.category),
     short_description: product?.short_description ?? "",
     description: product?.description ?? "",
     material: product?.material ?? "",

@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { ResponsiveImage } from "@/components/shared/responsive-image";
 import { uploadImage } from "@/lib/image-upload";
+import { DEFAULT_PRODUCT_CATEGORY, PRODUCT_CATEGORIES } from "@/lib/product-categories";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import type { Product } from "@/lib/types";
 import { slugify, splitTextList, toProductFormValues } from "@/lib/utils";
@@ -73,6 +74,7 @@ export function ProductForm({ mode, product }: ProductFormProps) {
         name: form.name.trim(),
         slug: slugPreview,
         price: Number(form.price || 0),
+        category: form.category || DEFAULT_PRODUCT_CATEGORY,
         short_description: form.short_description.trim() || null,
         description: form.description.trim() || null,
         material: form.material.trim() || null,
@@ -92,11 +94,7 @@ export function ProductForm({ mode, product }: ProductFormProps) {
           return;
         }
       } else if (product?.id) {
-        const { error } = await supabase
-          .from("products")
-          .update(payload)
-          .eq("id", product.id);
-
+        const { error } = await supabase.from("products").update(payload).eq("id", product.id);
         if (error) {
           setStatus(error.message || "更新产品失败。");
           return;
@@ -122,7 +120,7 @@ export function ProductForm({ mode, product }: ProductFormProps) {
   return (
     <form onSubmit={handleSubmit} className="grid gap-6">
       <section className="section-card px-6 py-6">
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-3">
           <label className="grid gap-2 text-sm text-foreground">
             产品名称
             <input
@@ -144,6 +142,23 @@ export function ProductForm({ mode, product }: ProductFormProps) {
               value={form.price}
               onChange={(event) => updateField("price", event.target.value)}
             />
+          </label>
+
+          <label className="grid gap-2 text-sm text-foreground">
+            产品分类
+            <select
+              className="field-input"
+              value={form.category}
+              onChange={(event) =>
+                updateField("category", event.target.value as (typeof PRODUCT_CATEGORIES)[number])
+              }
+            >
+              {PRODUCT_CATEGORIES.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
           </label>
         </div>
 
@@ -258,13 +273,7 @@ export function ProductForm({ mode, product }: ProductFormProps) {
 
           <label className="primary-button cursor-pointer">
             {uploading ? "上传中..." : "上传图片"}
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              hidden
-              onChange={handleImageSelect}
-            />
+            <input type="file" accept="image/*" multiple hidden onChange={handleImageSelect} />
           </label>
         </div>
 
