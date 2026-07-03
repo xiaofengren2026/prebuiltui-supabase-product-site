@@ -34,10 +34,10 @@ export function ProductsCatalog({ title, products, id }: ProductsCatalogProps) {
   }, [activeCategory, products]);
 
   return (
-    <section id={id} className="container-shell mt-16 md:mt-20">
+    <section id={id} className="container-shell mt-12 md:mt-20">
       <h2 className="font-serif text-3xl leading-tight text-foreground md:text-4xl">{title}</h2>
 
-      <div className="mt-6 -mx-1 overflow-x-auto pb-1">
+      <div className="hide-scrollbar mt-5 -mx-1 overflow-x-auto pb-1 md:mt-6">
         <div className="flex min-w-max gap-3 px-1">
           {PRODUCT_CATEGORY_FILTERS.map((category) => {
             const isActive = category === activeCategory;
@@ -60,7 +60,7 @@ export function ProductsCatalog({ title, products, id }: ProductsCatalogProps) {
         </div>
       </div>
 
-      <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-6 grid gap-4 md:mt-8 md:gap-5 md:grid-cols-2 xl:grid-cols-3">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)
         ) : (

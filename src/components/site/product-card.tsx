@@ -17,7 +17,7 @@ export function ProductCard({ product }: ProductCardProps) {
       href={`/products/${product.slug}`}
       className="group section-card flex h-full flex-col overflow-hidden transition duration-200 hover:-translate-y-1"
     >
-      <div className="h-[260px] overflow-hidden">
+      <div className="h-[220px] overflow-hidden md:h-[260px]">
         <ResponsiveImage
           src={product.images[0]}
           alt={product.name}
@@ -26,19 +26,19 @@ export function ProductCard({ product }: ProductCardProps) {
         />
       </div>
 
-      <div className="flex flex-1 flex-col px-5 py-5">
+      <div className="flex flex-1 flex-col px-4 py-4 md:px-5 md:py-5">
         <div className="flex items-start justify-between gap-4">
-          <div className="space-y-3">
+          <div className="space-y-2 md:space-y-3">
             <span className="inline-flex rounded-full border border-border bg-tag px-3 py-1 text-xs text-foreground">
               {category}
             </span>
-            <h3 className="font-serif text-2xl text-foreground">{product.name}</h3>
+            <h3 className="font-serif text-xl text-foreground md:text-2xl">{product.name}</h3>
           </div>
 
           <span className="text-sm font-semibold text-accent">{formatCurrency(product.price)}</span>
         </div>
 
-        <p className="mt-3 flex-1 text-sm leading-7 text-foreground-muted">
+        <p className="mt-3 flex-1 text-sm leading-6 text-foreground-muted md:leading-7">
           {product.short_description || "以克制留白承托产品本身，让细节更容易被看见。"}
         </p>
 

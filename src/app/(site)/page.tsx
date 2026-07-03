@@ -12,6 +12,9 @@ import { buildFeatureList } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
+const mobileFeatureTitles = ["东方意境", "随身好运", "轻礼之选"];
+const mobileFeatureTexts = ["东方留白，安静耐看", "轻盈佩戴，寓意温和", "适合赠礼，也适合收藏"];
+
 export default async function HomePage() {
   const [settings, featuredProducts, allProducts] = await Promise.all([
     getSiteSettings(),
@@ -45,34 +48,40 @@ export default async function HomePage() {
 
   return (
     <main className="pb-8">
-      <section className="container-shell pt-8 md:pt-10">
+      <section className="container-shell pt-4 md:pt-10">
         <div className="section-card subtle-grid grid overflow-hidden md:grid-cols-[1.1fr_0.9fr]">
-          <div className="px-6 py-12 md:px-10 md:py-16">
+          <div className="px-5 py-8 md:px-10 md:py-16">
             <span className="section-label">
               <Sparkles size={14} />
               东方淡绿水墨风产品站
             </span>
-            <h1 className="text-balance mt-6 max-w-2xl font-serif text-4xl leading-tight text-foreground md:text-6xl">
+            <h1 className="text-balance mt-4 max-w-2xl font-serif text-3xl leading-tight text-foreground md:mt-6 md:text-6xl">
               {settings.hero_title}
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-8 text-foreground-muted md:text-lg">
+            <p className="mt-4 max-w-xl text-sm leading-7 text-foreground-muted md:mt-6 md:text-lg md:leading-8">
               {settings.hero_subtitle}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/products" className="primary-button">
+            <div className="mt-6 flex flex-wrap gap-2.5 md:mt-8 md:gap-3">
+              <Link
+                href="/products"
+                className="primary-button px-4 py-2.5 text-sm md:px-6 md:py-3.5 md:text-base"
+              >
                 {settings.hero_primary_button_text}
-                <ArrowRight size={16} />
+                <ArrowRight size={15} />
               </Link>
-              <Link href="/contact" className="secondary-button">
+              <Link
+                href="/contact"
+                className="secondary-button px-4 py-2.5 text-sm md:px-6 md:py-3.5 md:text-base"
+              >
                 {settings.hero_secondary_button_text}
               </Link>
             </div>
           </div>
 
-          <div className="hero-ink relative min-h-[320px] overflow-hidden md:min-h-[560px]">
-            <div className="absolute inset-0 p-6 md:p-8">
-              <div className="h-full rounded-[28px] border border-white/20 bg-white/8 p-3 backdrop-blur-sm">
-                <div className="h-full overflow-hidden rounded-[22px]">
+          <div className="hero-ink relative min-h-[220px] overflow-hidden md:min-h-[560px]">
+            <div className="absolute inset-0 p-4 md:p-8">
+              <div className="h-full rounded-[24px] border border-white/20 bg-white/8 p-2.5 backdrop-blur-sm md:rounded-[28px] md:p-3">
+                <div className="h-full overflow-hidden rounded-[18px] md:rounded-[22px]">
                   <ResponsiveImage
                     src={settings.hero_image}
                     alt={settings.brand_name}
@@ -86,9 +95,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="brand" className="container-shell mt-20">
-        <div className="grid gap-6 md:grid-cols-[0.95fr_1.05fr]">
-          <div className="section-card px-6 py-8 md:px-8">
+      <section id="brand" className="container-shell mt-12 md:mt-20">
+        <div className="grid gap-4 md:gap-6 md:grid-cols-[0.95fr_1.05fr]">
+          <div className="section-card px-5 py-6 md:px-8 md:py-8">
             <SectionHeading
               label="品牌故事"
               title={settings.brand_intro_title}
@@ -96,12 +105,22 @@ export default async function HomePage() {
             />
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
-            {features.map((feature, index) => (
-              <article key={feature.title} className="section-card px-5 py-6">
-                <p className="text-xs tracking-[0.14em] text-foreground-muted">0{index + 1}</p>
-                <h3 className="mt-4 font-serif text-2xl text-foreground">{feature.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-foreground-muted">{feature.text}</p>
+          <div className="grid grid-cols-3 gap-3 md:gap-4">
+            {features.slice(0, 3).map((feature, index) => (
+              <article key={feature.title} className="section-card px-4 py-4 md:px-5 md:py-6">
+                <p className="text-[11px] tracking-[0.14em] text-foreground-muted md:text-xs">
+                  0{index + 1}
+                </p>
+                <h3 className="mt-2 font-serif text-base text-foreground md:mt-4 md:text-2xl">
+                  <span className="md:hidden">{mobileFeatureTitles[index] ?? feature.title}</span>
+                  <span className="hidden md:inline">{feature.title}</span>
+                </h3>
+                <p className="mt-1 text-xs leading-5 text-foreground-muted md:mt-3 md:text-sm md:leading-7">
+                  <span className="line-clamp-1 md:hidden">
+                    {mobileFeatureTexts[index] ?? feature.text}
+                  </span>
+                  <span className="hidden md:inline">{feature.text}</span>
+                </p>
               </article>
             ))}
           </div>
@@ -110,13 +129,13 @@ export default async function HomePage() {
 
       <ProductsCatalog id="products" title="东方雅物" products={allProducts} />
 
-      <section id="featured" className="container-shell mt-20">
+      <section id="featured" className="container-shell mt-14 md:mt-20">
         <SectionHeading
           label="精选系列"
           title="推荐产品展示"
           description="这里只展示后台设置为推荐的产品，不放分类筛选，让重点作品更集中。"
         />
-        <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-6 grid gap-4 md:mt-8 md:gap-5 md:grid-cols-2 xl:grid-cols-3">
           {featuredProducts.length > 0 ? (
             featuredProducts.map((product) => <ProductCard key={product.id} product={product} />)
           ) : (
@@ -130,7 +149,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="container-shell mt-20">
+      <section className="container-shell mt-14 md:mt-20">
         <div className="grid gap-4 md:grid-cols-3">
           <article className="section-card px-5 py-6">
             <p className="section-label">东方美学设计</p>
@@ -153,7 +172,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="contact" className="container-shell mt-20">
+      <section id="contact" className="container-shell mt-14 md:mt-20">
         <div className="section-card px-6 py-8 md:px-8">
           <SectionHeading
             label="联系我们"
