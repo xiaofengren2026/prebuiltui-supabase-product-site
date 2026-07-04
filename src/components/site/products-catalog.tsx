@@ -23,22 +23,6 @@ export function ProductsCatalog({ title, products, id }: ProductsCatalogProps) {
   const [activeCategory, setActiveCategory] = useState<ProductCategoryFilter>("全部");
   const [activeMaterial, setActiveMaterial] = useState<ProductMaterialFilter>("全部");
 
-  function handleCategoryChange(category: ProductCategoryFilter) {
-    setActiveCategory(category);
-
-    if (category !== "全部") {
-      setActiveMaterial("全部");
-    }
-  }
-
-  function handleMaterialChange(material: ProductMaterialFilter) {
-    setActiveMaterial(material);
-
-    if (material !== "全部") {
-      setActiveCategory("全部");
-    }
-  }
-
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const categoryMatched =
@@ -65,7 +49,7 @@ export function ProductsCatalog({ title, products, id }: ProductsCatalogProps) {
                 <button
                   key={material}
                   type="button"
-                  onClick={() => handleMaterialChange(material)}
+                  onClick={() => setActiveMaterial(material)}
                   className={`shrink-0 rounded-full border px-4 py-2 text-sm transition ${
                     isActive
                       ? "border-accent bg-accent text-button-text shadow-[0_10px_24px_rgba(86,110,98,0.16)]"
@@ -91,7 +75,7 @@ export function ProductsCatalog({ title, products, id }: ProductsCatalogProps) {
                 <button
                   key={category}
                   type="button"
-                  onClick={() => handleCategoryChange(category)}
+                  onClick={() => setActiveCategory(category)}
                   className={`shrink-0 rounded-full border px-4 py-2 text-sm transition ${
                     isActive
                       ? "border-accent bg-accent text-button-text shadow-[0_10px_24px_rgba(86,110,98,0.16)]"
