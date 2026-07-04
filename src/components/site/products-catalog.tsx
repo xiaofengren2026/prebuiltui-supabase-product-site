@@ -23,6 +23,22 @@ export function ProductsCatalog({ title, products, id }: ProductsCatalogProps) {
   const [activeCategory, setActiveCategory] = useState<ProductCategoryFilter>("全部");
   const [activeMaterial, setActiveMaterial] = useState<ProductMaterialFilter>("全部");
 
+  function handleCategoryChange(category: ProductCategoryFilter) {
+    setActiveCategory(category);
+
+    if (category !== "全部") {
+      setActiveMaterial("全部");
+    }
+  }
+
+  function handleMaterialChange(material: ProductMaterialFilter) {
+    setActiveMaterial(material);
+
+    if (material !== "全部") {
+      setActiveCategory("全部");
+    }
+  }
+
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const categoryMatched =
@@ -38,49 +54,55 @@ export function ProductsCatalog({ title, products, id }: ProductsCatalogProps) {
     <section id={id} className="container-shell mt-12 md:mt-20">
       <h2 className="font-serif text-3xl leading-tight text-foreground md:text-4xl">{title}</h2>
 
-      <div className="hide-scrollbar mt-5 -mx-1 overflow-x-auto pb-1 md:mt-6">
-        <div className="flex min-w-max gap-3 px-1">
-          {PRODUCT_CATEGORY_FILTERS.map((category) => {
-            const isActive = category === activeCategory;
+      <div className="mt-5 md:mt-6">
+        <p className="px-1 text-xs tracking-[0.16em] text-foreground-muted">材质</p>
+        <div className="hide-scrollbar mt-3 -mx-1 overflow-x-auto pb-1">
+          <div className="flex min-w-max gap-3 px-1">
+            {PRODUCT_MATERIAL_FILTERS.map((material) => {
+              const isActive = material === activeMaterial;
 
-            return (
-              <button
-                key={category}
-                type="button"
-                onClick={() => setActiveCategory(category)}
-                className={`shrink-0 rounded-full border px-4 py-2 text-sm transition ${
-                  isActive
-                    ? "border-accent bg-accent text-button-text shadow-[0_10px_24px_rgba(86,110,98,0.16)]"
-                    : "border-border bg-white/18 text-foreground hover:bg-white/28"
-                }`}
-              >
-                {category}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={material}
+                  type="button"
+                  onClick={() => handleMaterialChange(material)}
+                  className={`shrink-0 rounded-full border px-4 py-2 text-sm transition ${
+                    isActive
+                      ? "border-accent bg-accent text-button-text shadow-[0_10px_24px_rgba(86,110,98,0.16)]"
+                      : "border-border bg-white/14 text-foreground-muted hover:bg-white/24 hover:text-foreground"
+                  }`}
+                >
+                  {material}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      <div className="hide-scrollbar mt-3 -mx-1 overflow-x-auto pb-1 md:mt-4">
-        <div className="flex min-w-max gap-3 px-1">
-          {PRODUCT_MATERIAL_FILTERS.map((material) => {
-            const isActive = material === activeMaterial;
+      <div className="mt-4">
+        <p className="px-1 text-xs tracking-[0.16em] text-foreground-muted">分类</p>
+        <div className="hide-scrollbar mt-3 -mx-1 overflow-x-auto pb-1">
+          <div className="flex min-w-max gap-3 px-1">
+            {PRODUCT_CATEGORY_FILTERS.map((category) => {
+              const isActive = category === activeCategory;
 
-            return (
-              <button
-                key={material}
-                type="button"
-                onClick={() => setActiveMaterial(material)}
-                className={`shrink-0 rounded-full border px-4 py-2 text-sm transition ${
-                  isActive
-                    ? "border-accent bg-accent text-button-text shadow-[0_10px_24px_rgba(86,110,98,0.16)]"
-                    : "border-border bg-white/14 text-foreground-muted hover:bg-white/24 hover:text-foreground"
-                }`}
-              >
-                {material}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => handleCategoryChange(category)}
+                  className={`shrink-0 rounded-full border px-4 py-2 text-sm transition ${
+                    isActive
+                      ? "border-accent bg-accent text-button-text shadow-[0_10px_24px_rgba(86,110,98,0.16)]"
+                      : "border-border bg-white/18 text-foreground hover:bg-white/28"
+                  }`}
+                >
+                  {category}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 

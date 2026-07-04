@@ -1,37 +1,25 @@
+const PRIMARY_PRODUCT_CATEGORIES = ["手链", "项链", "耳饰", "戒指", "摆件", "东方好物"] as const;
+const LEGACY_PRODUCT_CATEGORIES = ["手镯", "挂件", "其他"] as const;
+
 export const PRODUCT_CATEGORIES = [
-  "手链",
-  "手镯",
-  "戒指",
-  "项链",
-  "耳饰",
-  "挂件",
-  "其他",
+  ...PRIMARY_PRODUCT_CATEGORIES,
+  ...LEGACY_PRODUCT_CATEGORIES,
 ] as const;
 
+const PRIMARY_PRODUCT_MATERIALS = ["珍珠", "银饰", "水晶", "黄铜", "琉璃", "布艺"] as const;
+const LEGACY_PRODUCT_MATERIALS = ["合金", "天然石", "编绳", "其他"] as const;
+
 export const PRODUCT_MATERIALS = [
-  "珍珠",
-  "银饰",
-  "水晶",
-  "合金",
-  "天然石",
-  "编绳",
-  "其他",
+  ...PRIMARY_PRODUCT_MATERIALS,
+  ...LEGACY_PRODUCT_MATERIALS,
 ] as const;
 
 export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number];
 export type ProductMaterial = (typeof PRODUCT_MATERIALS)[number];
 
-export const DEFAULT_PRODUCT_CATEGORY: ProductCategory = "其他";
-export const PRODUCT_CATEGORY_FILTERS = ["全部", ...PRODUCT_CATEGORIES] as const;
-export const PRODUCT_MATERIAL_FILTERS = [
-  "全部",
-  "珍珠",
-  "银饰",
-  "水晶",
-  "合金",
-  "天然石",
-  "编绳",
-] as const;
+export const DEFAULT_PRODUCT_CATEGORY: ProductCategory = "东方好物";
+export const PRODUCT_CATEGORY_FILTERS = ["全部", ...PRIMARY_PRODUCT_CATEGORIES] as const;
+export const PRODUCT_MATERIAL_FILTERS = ["全部", ...PRIMARY_PRODUCT_MATERIALS] as const;
 
 export type ProductCategoryFilter = (typeof PRODUCT_CATEGORY_FILTERS)[number];
 export type ProductMaterialFilter = (typeof PRODUCT_MATERIAL_FILTERS)[number];

@@ -11,7 +11,7 @@ begin
       and column_name = 'category'
   ) then
     alter table public.products
-    add column category text[] not null default array[U&'\5176\4ED6']::text[];
+    add column category text[] not null default array[U&'\4E1C\65B9\597D\7269']::text[];
   end if;
 
   if exists (
@@ -25,17 +25,17 @@ begin
     alter table public.products
     alter column category type text[]
     using case
-      when category is null or btrim(category) = '' then array[U&'\5176\4ED6']::text[]
+      when category is null or btrim(category) = '' then array[U&'\4E1C\65B9\597D\7269']::text[]
       else array[category]::text[]
     end;
   end if;
 end $$;
 
 alter table public.products
-alter column category set default array[U&'\5176\4ED6']::text[];
+alter column category set default array[U&'\4E1C\65B9\597D\7269']::text[];
 
 update public.products
-set category = array[U&'\5176\4ED6']::text[]
+set category = array[U&'\4E1C\65B9\597D\7269']::text[]
 where category is null or cardinality(category) = 0;
 
 update public.products

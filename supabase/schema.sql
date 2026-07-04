@@ -15,6 +15,8 @@ create table if not exists public.products (
   name text not null,
   slug text not null unique,
   price numeric(10, 2) not null default 0,
+  category text[] not null default array['东方好物']::text[],
+  materials text[] not null default '{}',
   short_description text,
   description text,
   material text,
@@ -28,6 +30,12 @@ create table if not exists public.products (
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now())
 );
+
+create index if not exists idx_products_category_gin
+on public.products using gin(category);
+
+create index if not exists idx_products_materials_gin
+on public.products using gin(materials);
 
 create table if not exists public.site_settings (
   id uuid primary key default gen_random_uuid(),
