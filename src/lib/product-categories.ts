@@ -1,25 +1,29 @@
-const PRIMARY_PRODUCT_CATEGORIES = ["手链", "项链", "耳饰", "戒指", "摆件", "东方好物"] as const;
-const LEGACY_PRODUCT_CATEGORIES = ["手镯", "挂件", "其他"] as const;
+const PRODUCT_CATEGORY_OPTIONS = ["手链", "项链", "耳饰", "戒指", "摆件", "其他"] as const;
+const PRODUCT_MATERIAL_OPTIONS = ["珍珠", "银饰", "水晶", "编绳", "其他"] as const;
 
-export const PRODUCT_CATEGORIES = [
-  ...PRIMARY_PRODUCT_CATEGORIES,
-  ...LEGACY_PRODUCT_CATEGORIES,
-] as const;
+const LEGACY_CATEGORY_ALIASES: Record<string, (typeof PRODUCT_CATEGORY_OPTIONS)[number]> = {
+  东方好物: "其他",
+  手镯: "其他",
+  挂件: "其他",
+};
 
-const PRIMARY_PRODUCT_MATERIALS = ["珍珠", "银饰", "水晶", "黄铜", "琉璃", "布艺"] as const;
-const LEGACY_PRODUCT_MATERIALS = ["合金", "天然石", "编绳", "其他"] as const;
+const LEGACY_MATERIAL_ALIASES: Record<string, (typeof PRODUCT_MATERIAL_OPTIONS)[number]> = {
+  黄铜: "其他",
+  琉璃: "其他",
+  布艺: "其他",
+  合金: "其他",
+  天然石: "其他",
+};
 
-export const PRODUCT_MATERIALS = [
-  ...PRIMARY_PRODUCT_MATERIALS,
-  ...LEGACY_PRODUCT_MATERIALS,
-] as const;
+export const PRODUCT_CATEGORIES = PRODUCT_CATEGORY_OPTIONS;
+export const PRODUCT_MATERIALS = PRODUCT_MATERIAL_OPTIONS;
 
 export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number];
 export type ProductMaterial = (typeof PRODUCT_MATERIALS)[number];
 
-export const DEFAULT_PRODUCT_CATEGORY: ProductCategory = "东方好物";
-export const PRODUCT_CATEGORY_FILTERS = ["全部", ...PRIMARY_PRODUCT_CATEGORIES] as const;
-export const PRODUCT_MATERIAL_FILTERS = ["全部", ...PRIMARY_PRODUCT_MATERIALS] as const;
+export const DEFAULT_PRODUCT_CATEGORY: ProductCategory = "其他";
+export const PRODUCT_CATEGORY_FILTERS = ["全部", ...PRODUCT_CATEGORY_OPTIONS] as const;
+export const PRODUCT_MATERIAL_FILTERS = ["全部", ...PRODUCT_MATERIAL_OPTIONS] as const;
 
 export type ProductCategoryFilter = (typeof PRODUCT_CATEGORY_FILTERS)[number];
 export type ProductMaterialFilter = (typeof PRODUCT_MATERIAL_FILTERS)[number];
@@ -30,9 +34,11 @@ export function normalizeProductCategory(value: string | null | undefined) {
     return DEFAULT_PRODUCT_CATEGORY;
   }
 
-  return PRODUCT_CATEGORIES.includes(trimmedValue as ProductCategory)
-    ? (trimmedValue as ProductCategory)
-    : DEFAULT_PRODUCT_CATEGORY;
+  if (PRODUCT_CATEGORIES.includes(trimmedValue as ProductCategory)) {
+    return trimmedValue as ProductCategory;
+  }
+
+  return LEGACY_CATEGORY_ALIASES[trimmedValue] ?? DEFAULT_PRODUCT_CATEGORY;
 }
 
 export function normalizeProductCategoryList(value: unknown) {
@@ -51,6 +57,19 @@ export function normalizeProductCategoryList(value: unknown) {
   return [DEFAULT_PRODUCT_CATEGORY];
 }
 
+function normalizeProductMaterial(value: string | null | undefined) {
+  const trimmedValue = value?.trim();
+  if (!trimmedValue) {
+    return null;
+  }
+
+  if (PRODUCT_MATERIALS.includes(trimmedValue as ProductMaterial)) {
+    return trimmedValue as ProductMaterial;
+  }
+
+  return LEGACY_MATERIAL_ALIASES[trimmedValue] ?? "其他";
+}
+
 export function normalizeProductMaterialList(value: unknown, fallback?: string | null) {
   const list = Array.isArray(value)
     ? value.filter((item): item is string => typeof item === "string")
@@ -61,9 +80,9 @@ export function normalizeProductMaterialList(value: unknown, fallback?: string |
           .filter(Boolean)
       : [];
 
-  return Array.from(
-    new Set(
-      list.filter((item) => PRODUCT_MATERIALS.includes(item as ProductMaterial)) as ProductMaterial[],
-    ),
-  );
+  const normalized = list
+    .map((item) => normalizeProductMaterial(item))
+    .filter((item): item is ProductMaterial => Boolean(item));
+
+  return Array.from(new Set(normalized));
 }
