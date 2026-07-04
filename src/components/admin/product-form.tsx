@@ -25,6 +25,15 @@ type ProductFormProps = {
 
 type ProductInsert = Database["public"]["Tables"]["products"]["Insert"];
 type ProductUpdate = Database["public"]["Tables"]["products"]["Update"];
+type LegacyProductPayload = Omit<ProductInsert, "category" | "materials"> & {
+  category?: string | null;
+};
+type LegacyProductsTable = {
+  insert: (values: LegacyProductPayload) => Promise<{ error: { message: string } | null }>;
+  update: (values: LegacyProductPayload) => {
+    eq: (column: string, value: string) => Promise<{ error: { message: string } | null }>;
+  };
+};
 
 function shouldFallbackToLegacySchema(message: string) {
   return /category|materials/i.test(message) && /column|schema/i.test(message);
@@ -97,9 +106,10 @@ export function ProductForm({ mode, product }: ProductFormProps) {
 
     try {
       const supabase = createBrowserSupabaseClient();
+      const legacyProductsTable = supabase.from("products") as unknown as LegacyProductsTable;
       const cleanedMaterials = form.materials.filter(Boolean);
 
-      const payload = {
+      const insertPayload: ProductInsert = {
         name: form.name.trim(),
         slug: slugPreview,
         price: Number(form.price || 0),
@@ -116,10 +126,9 @@ export function ProductForm({ mode, product }: ProductFormProps) {
         is_featured: form.is_featured,
         sort_order: Number(form.sort_order || 0),
       };
-      const insertPayload: ProductInsert = payload;
-      const updatePayload: ProductUpdate = payload;
+      const updatePayload: ProductUpdate = insertPayload;
 
-      const legacyPayload: Record<string, unknown> = {
+      const legacyPayload: LegacyProductPayload = {
         name: form.name.trim(),
         slug: slugPreview,
         price: Number(form.price || 0),
@@ -140,7 +149,7 @@ export function ProductForm({ mode, product }: ProductFormProps) {
         let { error } = await supabase.from("products").insert(insertPayload);
 
         if (error && shouldFallbackToLegacySchema(error.message)) {
-          ({ error } = await supabase.from("products").insert(legacyPayload));
+          ({ error } = await legacyProductsTable.insert(legacyPayload));
           if (!error) {
             setStatus("产品已保存，当前数据库仍在兼容旧字段结构。");
           }
@@ -154,7 +163,7 @@ export function ProductForm({ mode, product }: ProductFormProps) {
         let { error } = await supabase.from("products").update(updatePayload).eq("id", product.id);
 
         if (error && shouldFallbackToLegacySchema(error.message)) {
-          ({ error } = await supabase.from("products").update(legacyPayload).eq("id", product.id));
+          ({ error } = await legacyProductsTable.update(legacyPayload).eq("id", product.id));
           if (!error) {
             setStatus("产品已保存，当前数据库仍在兼容旧字段结构。");
           }
