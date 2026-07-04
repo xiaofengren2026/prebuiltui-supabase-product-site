@@ -122,6 +122,41 @@ export function OrdersTable({ initialOrders }: OrdersTableProps) {
     }
   }
 
+  async function deleteOrder(order: Order) {
+    const confirmed = window.confirm(`确认删除订单 ${order.order_id} 吗？`);
+    if (!confirmed) {
+      return;
+    }
+
+    setBusyId(order.id);
+    setMessage("");
+
+    if (order.id.startsWith("local-")) {
+      const nextLocalOrders = readLocalOrders().filter((item) => item.id !== order.id);
+      writeLocalOrders(nextLocalOrders);
+      setOrders((current) => current.filter((item) => item.id !== order.id));
+      setMessage(`本地订单 ${order.order_id} 已删除。`);
+      setBusyId(null);
+      return;
+    }
+
+    try {
+      const supabase = createBrowserSupabaseClient();
+      const { error } = await supabase.from("orders").delete().eq("id", order.id);
+
+      if (error) {
+        setMessage(error.message || "订单删除失败。");
+        return;
+      }
+
+      setOrders((current) => current.filter((item) => item.id !== order.id));
+      setMessage(`订单 ${order.order_id} 已删除。`);
+      router.refresh();
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   if (orders.length === 0) {
     return (
       <EmptyState
@@ -277,14 +312,24 @@ export function OrdersTable({ initialOrders }: OrdersTableProps) {
                   <span className="text-xs text-foreground-muted">
                     创建时间：{new Date(order.created_at).toLocaleString("zh-CN")}
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => saveOrder(order)}
-                    disabled={busyId === order.id}
-                    className="primary-button px-4 py-2 text-sm disabled:opacity-60"
-                  >
-                    {busyId === order.id ? "保存中..." : "保存订单"}
-                  </button>
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={() => deleteOrder(order)}
+                      disabled={busyId === order.id}
+                      className="rounded-full border border-border px-4 py-2 text-sm text-accent transition hover:bg-white/20 disabled:opacity-60"
+                    >
+                      {busyId === order.id ? "处理中..." : "删除订单"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => saveOrder(order)}
+                      disabled={busyId === order.id}
+                      className="primary-button px-4 py-2 text-sm disabled:opacity-60"
+                    >
+                      {busyId === order.id ? "处理中..." : "保存订单"}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
