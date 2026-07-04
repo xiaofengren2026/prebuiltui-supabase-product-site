@@ -210,9 +210,10 @@ export function OrderForm({ product }: OrderFormProps) {
         </label>
 
         {message ? (
-          <div className="rounded-2xl border border-border bg-white/18 px-4 py-3 text-sm text-accent">
-            {message}
-            {successOrderId ? <span className="ml-2 text-foreground">订单号：{successOrderId}</span> : null}
+          <div className="rounded-2xl border border-border bg-white/18 px-4 py-3 text-sm">
+            <p className="font-medium text-foreground">订单提交成功</p>
+            {successOrderId ? <p className="mt-1 text-foreground">订单号：{successOrderId}</p> : null}
+            <p className="mt-1 text-accent">我们已收到您的订单信息。</p>
           </div>
         ) : null}
 
