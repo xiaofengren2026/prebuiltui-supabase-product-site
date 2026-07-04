@@ -66,6 +66,10 @@ export default async function HomePage() {
                     alt={settings.brand_name}
                     className="h-full w-full object-cover"
                     fallbackLabel="首页主图待上传"
+                    loading="lazy"
+                    width={1280}
+                    quality={80}
+                    sizes="100vw"
                   />
                 </div>
               </div>
@@ -109,20 +113,13 @@ export default async function HomePage() {
       <ProductsCatalog id="products" title="东方雅物" products={allProducts} />
 
       <section id="featured" className="container-shell mt-14 md:mt-20">
-        <SectionHeading
-          label="精选系列"
-          title="推荐产品展示"
-          description="这里只展示后台设置为推荐的产品，不放分类筛选，让重点作品更集中。"
-        />
+        <SectionHeading label="精选系列" title="青岚精选" />
         <div className="mt-6 grid gap-4 md:mt-8 md:gap-5 md:grid-cols-2 xl:grid-cols-3">
           {featuredProducts.length > 0 ? (
             featuredProducts.map((product) => <ProductCard key={product.id} product={product} />)
           ) : (
             <div className="md:col-span-2 xl:col-span-3">
-              <EmptyState
-                title="还没有推荐产品"
-                description="去后台把产品标记为推荐后，这里会自动显示。"
-              />
+              <EmptyState title="暂无推荐产品" description="" />
             </div>
           )}
         </div>
@@ -130,11 +127,7 @@ export default async function HomePage() {
 
       <section id="contact" className="container-shell mt-14 md:mt-20">
         <div className="section-card px-6 py-8 md:px-8">
-          <SectionHeading
-            label="联系我们"
-            title="欢迎通过你常用的方式联系"
-            description="这里的邮箱、社交链接和联系方式，都可以在后台网站设置页里直接修改。"
-          />
+          <SectionHeading label="联系我们" title="真诚欢迎前来合作咨询" />
           <div className="mt-8">
             <ContactCards items={contacts} />
           </div>
