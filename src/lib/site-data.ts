@@ -2,10 +2,59 @@ import "server-only";
 
 import { DEFAULT_SITE_SETTINGS } from "@/lib/constants";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import type { Product, SiteSettings } from "@/lib/types";
-import { mapProductRowToProduct, mergeSettings } from "@/lib/utils";
+import type { Order, Product, SiteSettings } from "@/lib/types";
+import { mapOrderRowToOrder, mapProductRowToProduct, mergeSettings } from "@/lib/utils";
 
 const DEFAULT_BRAND_NAME = "青岚东方美学";
+
+const MOCK_PRODUCTS: Product[] = [
+  {
+    id: "mock-bracelet-1",
+    name: "青岚珍珠手链",
+    slug: "qinglan-pearl-bracelet",
+    price: 68,
+    category: ["手链"],
+    materials: ["珍珠", "银饰"],
+    short_description: "温润珍珠与细银点缀，适合日常佩戴与轻礼赠送。",
+    description:
+      "以克制的东方留白感呈现珍珠与银饰的轻盈组合，适合叠戴，也适合作为入门款东方雅物。",
+    material: "珍珠、银饰",
+    size: "可调节",
+    color: "珠白 / 银灰",
+    tags: ["东方美学", "轻礼物", "日常佩戴"],
+    images: [],
+    is_active: true,
+    is_featured: true,
+    sort_order: 1,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: "mock-necklace-1",
+    name: "静墨天然石项链",
+    slug: "jingmo-stone-necklace",
+    price: 92,
+    category: ["项链"],
+    materials: ["天然石", "合金"],
+    short_description: "自然石纹与低饱和金属结合，安静而有层次。",
+    description:
+      "以天然石为主角，保留纹理与色差的自然美感，整体线条简洁，适合独立佩戴或作为系列搭配。",
+    material: "天然石、合金",
+    size: "45cm",
+    color: "烟灰绿",
+    tags: ["天然石", "东方雅物", "低调质感"],
+    images: [],
+    is_active: true,
+    is_featured: false,
+    sort_order: 2,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+];
+
+function getMockProducts() {
+  return MOCK_PRODUCTS;
+}
 
 export async function getSiteSettings(): Promise<SiteSettings> {
   const supabase = await createServerSupabaseClient();
@@ -44,7 +93,7 @@ export async function getActiveProducts(): Promise<Product[]> {
   const supabase = await createServerSupabaseClient();
 
   if (!supabase) {
-    return [];
+    return getMockProducts().filter((product) => product.is_active);
   }
 
   const { data, error } = await supabase
@@ -56,7 +105,7 @@ export async function getActiveProducts(): Promise<Product[]> {
     .order("created_at", { ascending: false });
 
   if (error || !data) {
-    return [];
+    return getMockProducts().filter((product) => product.is_active);
   }
 
   return data.map(mapProductRowToProduct);
@@ -64,7 +113,6 @@ export async function getActiveProducts(): Promise<Product[]> {
 
 export async function getFeaturedProducts() {
   const products = await getActiveProducts();
-
   return products.filter((product) => product.is_featured);
 }
 
@@ -72,7 +120,7 @@ export async function getPublicProductBySlug(slug: string) {
   const supabase = await createServerSupabaseClient();
 
   if (!supabase) {
-    return null;
+    return getMockProducts().find((product) => product.slug === slug && product.is_active) ?? null;
   }
 
   const { data, error } = await supabase
@@ -83,7 +131,7 @@ export async function getPublicProductBySlug(slug: string) {
     .maybeSingle();
 
   if (error || !data) {
-    return null;
+    return getMockProducts().find((product) => product.slug === slug && product.is_active) ?? null;
   }
 
   return mapProductRowToProduct(data);
@@ -93,7 +141,7 @@ export async function getAdminProducts() {
   const supabase = await createServerSupabaseClient();
 
   if (!supabase) {
-    return [];
+    return getMockProducts();
   }
 
   const { data, error } = await supabase
@@ -103,7 +151,7 @@ export async function getAdminProducts() {
     .order("created_at", { ascending: false });
 
   if (error || !data) {
-    return [];
+    return getMockProducts();
   }
 
   return data.map(mapProductRowToProduct);
@@ -113,18 +161,33 @@ export async function getAdminProductById(id: string) {
   const supabase = await createServerSupabaseClient();
 
   if (!supabase) {
-    return null;
+    return getMockProducts().find((product) => product.id === id) ?? null;
   }
 
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
+  const { data, error } = await supabase.from("products").select("*").eq("id", id).maybeSingle();
 
   if (error || !data) {
-    return null;
+    return getMockProducts().find((product) => product.id === id) ?? null;
   }
 
   return mapProductRowToProduct(data);
+}
+
+export async function getAdminOrders(): Promise<Order[]> {
+  const supabase = await createServerSupabaseClient();
+
+  if (!supabase) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map(mapOrderRowToOrder);
 }

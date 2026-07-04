@@ -13,7 +13,7 @@ export default async function ProtectedAdminLayout({
   return (
     <AdminShell
       title="网站后台"
-      description="这里是后台管理区。前台只负责展示，后续改产品、图片和首页文案主要都在这里完成。"
+      description="这里是后台管理区。你可以继续管理产品、订单、图片和首页文案。"
     >
       {children}
     </AdminShell>

@@ -9,6 +9,78 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      orders: {
+        Row: {
+          id: string;
+          order_id: string;
+          product_id: string | null;
+          product_name: string;
+          price: number;
+          category: string[] | null;
+          materials: string[] | null;
+          customer_name: string;
+          email: string;
+          phone: string;
+          address: string;
+          note: string | null;
+          payment_status: string;
+          shipping_status: string;
+          payment_method: string;
+          payment_id: string | null;
+          tracking_company: string | null;
+          tracking_number: string | null;
+          admin_note: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          product_id?: string | null;
+          product_name: string;
+          price: number;
+          category?: string[] | null;
+          materials?: string[] | null;
+          customer_name: string;
+          email: string;
+          phone: string;
+          address: string;
+          note?: string | null;
+          payment_status?: string;
+          shipping_status?: string;
+          payment_method?: string;
+          payment_id?: string | null;
+          tracking_company?: string | null;
+          tracking_number?: string | null;
+          admin_note?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          product_id?: string | null;
+          product_name?: string;
+          price?: number;
+          category?: string[] | null;
+          materials?: string[] | null;
+          customer_name?: string;
+          email?: string;
+          phone?: string;
+          address?: string;
+          note?: string | null;
+          payment_status?: string;
+          shipping_status?: string;
+          payment_method?: string;
+          payment_id?: string | null;
+          tracking_company?: string | null;
+          tracking_number?: string | null;
+          admin_note?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       page_views: {
         Row: {
           id: string;
@@ -51,7 +123,8 @@ export type Database = {
           name: string;
           slug: string;
           price: number;
-          category: string | null;
+          category: string[] | null;
+          materials: string[] | null;
           short_description: string | null;
           description: string | null;
           material: string | null;
@@ -70,7 +143,8 @@ export type Database = {
           name: string;
           slug: string;
           price: number;
-          category?: string | null;
+          category?: string[] | null;
+          materials?: string[] | null;
           short_description?: string | null;
           description?: string | null;
           material?: string | null;
@@ -89,7 +163,8 @@ export type Database = {
           name?: string;
           slug?: string;
           price?: number;
-          category?: string | null;
+          category?: string[] | null;
+          materials?: string[] | null;
           short_description?: string | null;
           description?: string | null;
           material?: string | null;

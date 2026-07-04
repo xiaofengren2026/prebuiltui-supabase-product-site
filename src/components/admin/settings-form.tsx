@@ -61,10 +61,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
       };
 
       if (settings.id) {
-        const { error } = await supabase
-          .from("site_settings")
-          .update(payload)
-          .eq("id", settings.id);
+        const { error } = await supabase.from("site_settings").update(payload).eq("id", settings.id);
 
         if (error) {
           setStatus(error.message || "保存设置失败。");
@@ -142,9 +139,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
               <input
                 className="field-input"
                 value={form.hero_primary_button_text}
-                onChange={(event) =>
-                  updateField("hero_primary_button_text", event.target.value)
-                }
+                onChange={(event) => updateField("hero_primary_button_text", event.target.value)}
               />
             </label>
 
@@ -153,9 +148,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
               <input
                 className="field-input"
                 value={form.hero_secondary_button_text}
-                onChange={(event) =>
-                  updateField("hero_secondary_button_text", event.target.value)
-                }
+                onChange={(event) => updateField("hero_secondary_button_text", event.target.value)}
               />
             </label>
           </div>

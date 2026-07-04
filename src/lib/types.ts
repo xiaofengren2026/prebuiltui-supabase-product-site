@@ -3,7 +3,8 @@ export type Product = {
   name: string;
   slug: string;
   price: number;
-  category: string;
+  category: string[];
+  materials: string[];
   short_description: string | null;
   description: string | null;
   material: string | null;
@@ -92,4 +93,28 @@ export type AnalyticsSummary = {
   topPages: AnalyticsTopPageItem[];
   topProducts: AnalyticsTopProductItem[];
   recentVisits: PageView[];
+};
+
+export type Order = {
+  id: string;
+  order_id: string;
+  product_id: string | null;
+  product_name: string;
+  price: number;
+  category: string[];
+  materials: string[];
+  customer_name: string;
+  email: string;
+  phone: string;
+  address: string;
+  note: string | null;
+  payment_status: string;
+  shipping_status: string;
+  payment_method: string;
+  payment_id: string | null;
+  tracking_company: string | null;
+  tracking_number: string | null;
+  admin_note: string | null;
+  created_at: string;
+  updated_at: string;
 };

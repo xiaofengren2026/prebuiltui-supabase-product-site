@@ -10,7 +10,7 @@ type ProductCardProps = {
 };
 
 export function ProductCard({ product }: ProductCardProps) {
-  const category = normalizeProductCategory(product.category || DEFAULT_PRODUCT_CATEGORY);
+  const category = normalizeProductCategory(product.category[0] || DEFAULT_PRODUCT_CATEGORY);
 
   return (
     <Link
@@ -33,9 +33,16 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="flex flex-1 flex-col px-4 py-4 md:px-5 md:py-5">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-2 md:space-y-3">
-            <span className="inline-flex rounded-full border border-border bg-tag px-3 py-1 text-xs text-foreground">
-              {category}
-            </span>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex rounded-full border border-border bg-tag px-3 py-1 text-xs text-foreground">
+                {category}
+              </span>
+              {product.materials[0] ? (
+                <span className="inline-flex rounded-full border border-border bg-white/16 px-3 py-1 text-xs text-foreground-muted">
+                  {product.materials[0]}
+                </span>
+              ) : null}
+            </div>
             <h3 className="font-serif text-xl text-foreground md:text-2xl">{product.name}</h3>
           </div>
 
@@ -43,7 +50,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         <p className="mt-3 flex-1 text-sm leading-6 text-foreground-muted md:leading-7">
-          {product.short_description || "以克制留白承托产品本身，让细节更容易被看见。"}
+          {product.short_description || "以克制留白承托作品本身，让细节自然被看见。"}
         </p>
 
         <div className="mt-4 flex flex-wrap gap-2">

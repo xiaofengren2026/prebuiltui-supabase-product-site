@@ -6,7 +6,7 @@ import { PageViewTracker } from "@/components/site/page-view-tracker";
 import { ProductGallery } from "@/components/site/product-gallery";
 import { SectionHeading } from "@/components/site/section-heading";
 import { getPublicProductBySlug, getSiteSettings } from "@/lib/site-data";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, joinTextList } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +26,7 @@ export default async function ProductDetailPage({
   }
 
   const detailItems = [
-    { label: "材质", value: product.material },
+    { label: "材质", value: joinTextList(product.materials, "、") || product.material },
     { label: "尺寸", value: product.size },
     { label: "颜色", value: product.color },
   ].filter((item) => item.value);
@@ -49,7 +49,7 @@ export default async function ProductDetailPage({
         <div className="grid gap-5">
           <div className="section-card px-6 py-8 md:px-8">
             <SectionHeading
-              label={product.is_featured ? "推荐产品" : "产品详情"}
+              label={product.is_featured ? "精选作品" : "产品详情"}
               title={product.name}
               description={product.short_description || ""}
             />
@@ -70,7 +70,7 @@ export default async function ProductDetailPage({
           <div className="section-card px-6 py-8 md:px-8">
             <h2 className="font-serif text-2xl text-foreground">详细描述</h2>
             <p className="mt-4 text-sm leading-8 text-foreground-muted">
-              {product.description || "这件产品的更多细节、佩戴感和风格说明，可以在后台继续补充。"}
+              {product.description || "这件作品的更多细节、佩戴感与风格说明，会在这里完整呈现。"}
             </p>
 
             {detailItems.length > 0 ? (
@@ -89,18 +89,24 @@ export default async function ProductDetailPage({
           </div>
 
           <div className="section-card px-6 py-8 md:px-8">
-            <h2 className="font-serif text-2xl text-foreground">联系购买或咨询</h2>
+            <h2 className="font-serif text-2xl text-foreground">下单与咨询</h2>
             <p className="mt-4 text-sm leading-8 text-foreground-muted">
-              当前站点只做产品展示，不包含购物车、支付、订单和物流。你可以通过联系方式直接咨询。
+              先提交轻量订单，我们会根据你填写的信息继续跟进确认。
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href={`mailto:${settings.contact_email}`} className="primary-button">
-                <Mail size={16} />
-                邮件联系
-              </a>
-              <Link href="/#contact" className="secondary-button">
-                查看更多联系方式
+              <Link href={`/products/${product.slug}/order`} className="primary-button">
+                立即购买
               </Link>
+              {settings.contact_email?.includes("@") ? (
+                <a href={`mailto:${settings.contact_email}`} className="secondary-button">
+                  <Mail size={16} />
+                  邮件咨询
+                </a>
+              ) : (
+                <Link href="/#contact" className="secondary-button">
+                  查看联系方式
+                </Link>
+              )}
             </div>
           </div>
         </div>

@@ -168,7 +168,7 @@ export default async function AdminAnalyticsPage() {
                     <td className="px-3 py-4 text-foreground">{visit.path}</td>
                     <td className="px-3 py-4 text-foreground-muted">{visit.page_type}</td>
                     <td className="px-3 py-4 text-foreground">
-                      {visit.product_name || "—"}
+                      {visit.product_name || "-"}
                     </td>
                     <td className="px-3 py-4 text-foreground-muted">
                       {shortenVisitorId(visit.visitor_id)}

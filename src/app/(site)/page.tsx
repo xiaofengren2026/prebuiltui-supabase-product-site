@@ -12,7 +12,7 @@ import { buildContactItems, buildFeatureList } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-const mobileFeatureTitles = ["东方意境设计", "好运随身佩戴", "轻手作礼赠之选"];
+const mobileFeatureTitles = ["东方意境", "随身好运", "轻礼之选"];
 const mobileFeatureTexts = ["东方留白，安静耐看", "轻盈佩戴，寓意温和", "适合赠礼，也适合收藏"];
 
 export default async function HomePage() {

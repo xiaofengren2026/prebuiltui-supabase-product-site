@@ -14,14 +14,14 @@ type ContactSectionProps = {
 export function ContactSection({ settings, id }: ContactSectionProps) {
   const contacts = buildContactItems(settings);
   const hasEmail = Boolean(settings.contact_email?.trim() && settings.contact_email.includes("@"));
+  const hasWhatsApp = Boolean(settings.whatsapp_url?.trim());
 
   return (
     <section id={id} className="container-shell mt-20">
       <div className="section-card px-6 py-8 md:px-8">
         <SectionHeading
           label="联系我们"
-          title="欢迎通过你常用的方式联系"
-          description="这里的邮箱、社交链接和联系方式，都可以在后台网站设置页里直接修改。"
+          title="真诚欢迎前来合作咨询"
         />
         <div className="mt-8">
           <ContactCards items={contacts} />
@@ -36,10 +36,18 @@ export function ContactSection({ settings, id }: ContactSectionProps) {
           ) : (
             <span className="primary-button opacity-85">待补充邮箱</span>
           )}
-          <Link href="/#contact" className="secondary-button">
-            <MessageCircleMore size={16} />
-            WhatsApp
-          </Link>
+
+          {hasWhatsApp ? (
+            <a href={settings.whatsapp_url} className="secondary-button" target="_blank" rel="noreferrer">
+              <MessageCircleMore size={16} />
+              WhatsApp
+            </a>
+          ) : (
+            <Link href="/#contact" className="secondary-button">
+              <MessageCircleMore size={16} />
+              返回联系区
+            </Link>
+          )}
         </div>
       </div>
     </section>

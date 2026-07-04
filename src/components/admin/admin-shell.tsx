@@ -16,7 +16,7 @@ export function AdminShell({ title, description, children }: AdminShellProps) {
         <aside className="section-card h-fit px-5 py-6">
           <p className="font-serif text-2xl text-foreground">网站后台</p>
           <p className="mt-2 text-sm leading-7 text-foreground-muted">
-            管理产品、首页文案、联系方式和图片。
+            管理产品、首页文案、联系方式、订单和图片。
           </p>
           <div className="mt-6">
             <AdminNav />

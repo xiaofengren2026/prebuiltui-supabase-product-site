@@ -1,7 +1,11 @@
 import { clsx } from "clsx";
 
-import { DEFAULT_PRODUCT_CATEGORY, normalizeProductCategory } from "@/lib/product-categories";
-import type { ContactItem, Product, SiteSettings } from "@/lib/types";
+import {
+  DEFAULT_PRODUCT_CATEGORY,
+  normalizeProductCategoryList,
+  normalizeProductMaterialList,
+} from "@/lib/product-categories";
+import type { ContactItem, Order, Product, SiteSettings } from "@/lib/types";
 
 export function cn(...inputs: Array<string | false | null | undefined>) {
   return clsx(inputs);
@@ -32,8 +36,8 @@ export function splitTextList(input: string) {
     .filter(Boolean);
 }
 
-export function joinTextList(input: string[] | null | undefined) {
-  return (input ?? []).join(", ");
+export function joinTextList(input: string[] | null | undefined, separator = ", ") {
+  return (input ?? []).join(separator);
 }
 
 export function normalizeImageList(input: unknown): string[] {
@@ -45,18 +49,23 @@ export function normalizeImageList(input: unknown): string[] {
 }
 
 export function mapProductRowToProduct(row: Record<string, unknown>): Product {
+  const category = normalizeProductCategoryList(row.category);
+  const materials = normalizeProductMaterialList(
+    row.materials,
+    typeof row.material === "string" ? row.material : null,
+  );
+
   return {
     id: String(row.id ?? ""),
     name: String(row.name ?? ""),
     slug: String(row.slug ?? ""),
     price: Number(row.price ?? 0),
-    category: normalizeProductCategory(
-      typeof row.category === "string" ? row.category : DEFAULT_PRODUCT_CATEGORY,
-    ),
+    category,
+    materials,
     short_description:
       typeof row.short_description === "string" ? row.short_description : null,
     description: typeof row.description === "string" ? row.description : null,
-    material: typeof row.material === "string" ? row.material : null,
+    material: typeof row.material === "string" ? row.material : joinTextList(materials, "、") || null,
     size: typeof row.size === "string" ? row.size : null,
     color: typeof row.color === "string" ? row.color : null,
     tags: Array.isArray(row.tags)
@@ -66,6 +75,32 @@ export function mapProductRowToProduct(row: Record<string, unknown>): Product {
     is_active: Boolean(row.is_active),
     is_featured: Boolean(row.is_featured),
     sort_order: Number(row.sort_order ?? 0),
+    created_at: String(row.created_at ?? ""),
+    updated_at: String(row.updated_at ?? ""),
+  };
+}
+
+export function mapOrderRowToOrder(row: Record<string, unknown>): Order {
+  return {
+    id: String(row.id ?? ""),
+    order_id: String(row.order_id ?? ""),
+    product_id: typeof row.product_id === "string" ? row.product_id : null,
+    product_name: String(row.product_name ?? ""),
+    price: Number(row.price ?? 0),
+    category: normalizeProductCategoryList(row.category),
+    materials: normalizeProductMaterialList(row.materials),
+    customer_name: String(row.customer_name ?? ""),
+    email: String(row.email ?? ""),
+    phone: String(row.phone ?? ""),
+    address: String(row.address ?? ""),
+    note: typeof row.note === "string" ? row.note : null,
+    payment_status: String(row.payment_status ?? "未付款"),
+    shipping_status: String(row.shipping_status ?? "未发货"),
+    payment_method: String(row.payment_method ?? "pending"),
+    payment_id: typeof row.payment_id === "string" ? row.payment_id : null,
+    tracking_company: typeof row.tracking_company === "string" ? row.tracking_company : null,
+    tracking_number: typeof row.tracking_number === "string" ? row.tracking_number : null,
+    admin_note: typeof row.admin_note === "string" ? row.admin_note : null,
     created_at: String(row.created_at ?? ""),
     updated_at: String(row.updated_at ?? ""),
   };
@@ -145,10 +180,10 @@ export function toProductFormValues(product?: Product | null) {
   return {
     name: product?.name ?? "",
     price: product?.price ? String(product.price) : "",
-    category: normalizeProductCategory(product?.category),
+    category: product?.category?.[0] ?? DEFAULT_PRODUCT_CATEGORY,
+    materials: product?.materials ?? [],
     short_description: product?.short_description ?? "",
     description: product?.description ?? "",
-    material: product?.material ?? "",
     size: product?.size ?? "",
     color: product?.color ?? "",
     tags: joinTextList(product?.tags),

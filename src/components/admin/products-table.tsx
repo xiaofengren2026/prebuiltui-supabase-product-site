@@ -8,11 +8,15 @@ import type { Database } from "@/lib/database.types";
 import { DEFAULT_PRODUCT_CATEGORY, normalizeProductCategory } from "@/lib/product-categories";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import type { Product } from "@/lib/types";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, joinTextList } from "@/lib/utils";
 
 type ProductsTableProps = {
   initialProducts: Product[];
 };
+
+function shouldFallbackToLegacySchema(message: string) {
+  return /category|materials/i.test(message) && /column|schema/i.test(message);
+}
 
 export function ProductsTable({ initialProducts }: ProductsTableProps) {
   const router = useRouter();
@@ -30,14 +34,8 @@ export function ProductsTable({ initialProducts }: ProductsTableProps) {
       const updates: Pick<
         Database["public"]["Tables"]["products"]["Update"],
         "is_active" | "is_featured"
-      > =
-        field === "is_active"
-          ? { is_active: nextValue }
-          : { is_featured: nextValue };
-      const { error } = await supabase
-        .from("products")
-        .update(updates)
-        .eq("id", product.id);
+      > = field === "is_active" ? { is_active: nextValue } : { is_featured: nextValue };
+      const { error } = await supabase.from("products").update(updates).eq("id", product.id);
 
       if (error) {
         setMessage(error.message || "更新失败。");
@@ -92,7 +90,9 @@ export function ProductsTable({ initialProducts }: ProductsTableProps) {
 
       {message ? (
         <div className="border-b border-border bg-white/20 px-6 py-3 text-sm text-accent">
-          {message}
+          {shouldFallbackToLegacySchema(message)
+            ? "当前数据库还没有升级到新字段，旧结构下仍可继续管理产品。"
+            : message}
         </div>
       ) : null}
 
@@ -102,6 +102,7 @@ export function ProductsTable({ initialProducts }: ProductsTableProps) {
             <tr>
               <th className="px-6 py-4 font-medium">产品</th>
               <th className="px-6 py-4 font-medium">分类</th>
+              <th className="px-6 py-4 font-medium">材质</th>
               <th className="px-6 py-4 font-medium">价格</th>
               <th className="px-6 py-4 font-medium">上架</th>
               <th className="px-6 py-4 font-medium">推荐</th>
@@ -117,7 +118,10 @@ export function ProductsTable({ initialProducts }: ProductsTableProps) {
                   <div className="mt-1 text-xs text-foreground-muted">{product.slug}</div>
                 </td>
                 <td className="px-6 py-4 text-foreground">
-                  {normalizeProductCategory(product.category || DEFAULT_PRODUCT_CATEGORY)}
+                  {normalizeProductCategory(product.category[0] || DEFAULT_PRODUCT_CATEGORY)}
+                </td>
+                <td className="px-6 py-4 text-foreground-muted">
+                  {joinTextList(product.materials, "、") || "其他"}
                 </td>
                 <td className="px-6 py-4 text-foreground">{formatCurrency(product.price)}</td>
                 <td className="px-6 py-4">
@@ -138,9 +142,7 @@ export function ProductsTable({ initialProducts }: ProductsTableProps) {
                     onClick={() => toggleField(product, "is_featured")}
                     disabled={busyId === product.id}
                     className={`rounded-full px-3 py-1 text-xs ${
-                      product.is_featured
-                        ? "bg-accent text-button-text"
-                        : "bg-tag text-foreground-muted"
+                      product.is_featured ? "bg-accent text-button-text" : "bg-tag text-foreground-muted"
                     }`}
                   >
                     {product.is_featured ? "已推荐" : "普通"}

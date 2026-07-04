@@ -6,15 +6,29 @@ import { useState } from "react";
 
 import { ResponsiveImage } from "@/components/shared/responsive-image";
 import { uploadImage } from "@/lib/image-upload";
-import { DEFAULT_PRODUCT_CATEGORY, PRODUCT_CATEGORIES } from "@/lib/product-categories";
+import type { Database } from "@/lib/database.types";
+import {
+  DEFAULT_PRODUCT_CATEGORY,
+  PRODUCT_CATEGORIES,
+  PRODUCT_MATERIALS,
+  type ProductCategory,
+  type ProductMaterial,
+} from "@/lib/product-categories";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import type { Product } from "@/lib/types";
-import { slugify, splitTextList, toProductFormValues } from "@/lib/utils";
+import { joinTextList, slugify, splitTextList, toProductFormValues } from "@/lib/utils";
 
 type ProductFormProps = {
   mode: "create" | "edit";
   product?: Product | null;
 };
+
+type ProductInsert = Database["public"]["Tables"]["products"]["Insert"];
+type ProductUpdate = Database["public"]["Tables"]["products"]["Update"];
+
+function shouldFallbackToLegacySchema(message: string) {
+  return /category|materials/i.test(message) && /column|schema/i.test(message);
+}
 
 export function ProductForm({ mode, product }: ProductFormProps) {
   const router = useRouter();
@@ -63,6 +77,19 @@ export function ProductForm({ mode, product }: ProductFormProps) {
     }));
   }
 
+  function toggleMaterial(material: ProductMaterial) {
+    setForm((current) => {
+      const exists = current.materials.includes(material);
+
+      return {
+        ...current,
+        materials: exists
+          ? current.materials.filter((item) => item !== material)
+          : [...current.materials, material],
+      };
+    });
+  }
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitting(true);
@@ -70,14 +97,34 @@ export function ProductForm({ mode, product }: ProductFormProps) {
 
     try {
       const supabase = createBrowserSupabaseClient();
-      const payload = {
+      const cleanedMaterials = form.materials.filter(Boolean);
+
+      const payload: ProductInsert | ProductUpdate = {
+        name: form.name.trim(),
+        slug: slugPreview,
+        price: Number(form.price || 0),
+        category: [form.category || DEFAULT_PRODUCT_CATEGORY],
+        materials: cleanedMaterials,
+        short_description: form.short_description.trim() || null,
+        description: form.description.trim() || null,
+        material: joinTextList(cleanedMaterials, "、") || null,
+        size: form.size.trim() || null,
+        color: form.color.trim() || null,
+        tags: splitTextList(form.tags),
+        images: form.images,
+        is_active: form.is_active,
+        is_featured: form.is_featured,
+        sort_order: Number(form.sort_order || 0),
+      };
+
+      const legacyPayload: Record<string, unknown> = {
         name: form.name.trim(),
         slug: slugPreview,
         price: Number(form.price || 0),
         category: form.category || DEFAULT_PRODUCT_CATEGORY,
         short_description: form.short_description.trim() || null,
         description: form.description.trim() || null,
-        material: form.material.trim() || null,
+        material: joinTextList(cleanedMaterials, "、") || null,
         size: form.size.trim() || null,
         color: form.color.trim() || null,
         tags: splitTextList(form.tags),
@@ -88,13 +135,29 @@ export function ProductForm({ mode, product }: ProductFormProps) {
       };
 
       if (mode === "create") {
-        const { error } = await supabase.from("products").insert(payload);
+        let { error } = await supabase.from("products").insert(payload);
+
+        if (error && shouldFallbackToLegacySchema(error.message)) {
+          ({ error } = await supabase.from("products").insert(legacyPayload));
+          if (!error) {
+            setStatus("产品已保存，当前数据库仍在兼容旧字段结构。");
+          }
+        }
+
         if (error) {
           setStatus(error.message || "新增产品失败。");
           return;
         }
       } else if (product?.id) {
-        const { error } = await supabase.from("products").update(payload).eq("id", product.id);
+        let { error } = await supabase.from("products").update(payload).eq("id", product.id);
+
+        if (error && shouldFallbackToLegacySchema(error.message)) {
+          ({ error } = await supabase.from("products").update(legacyPayload).eq("id", product.id));
+          if (!error) {
+            setStatus("产品已保存，当前数据库仍在兼容旧字段结构。");
+          }
+        }
+
         if (error) {
           setStatus(error.message || "更新产品失败。");
           return;
@@ -149,9 +212,7 @@ export function ProductForm({ mode, product }: ProductFormProps) {
             <select
               className="field-input"
               value={form.category}
-              onChange={(event) =>
-                updateField("category", event.target.value as (typeof PRODUCT_CATEGORIES)[number])
-              }
+              onChange={(event) => updateField("category", event.target.value as ProductCategory)}
             >
               {PRODUCT_CATEGORIES.map((category) => (
                 <option key={category} value={category}>
@@ -190,33 +251,45 @@ export function ProductForm({ mode, product }: ProductFormProps) {
       </section>
 
       <section className="section-card px-6 py-6">
-        <div className="grid gap-5 md:grid-cols-3">
-          <label className="grid gap-2 text-sm text-foreground">
-            材质
-            <input
-              className="field-input"
-              value={form.material}
-              onChange={(event) => updateField("material", event.target.value)}
-            />
-          </label>
+        <div className="grid gap-5 md:grid-cols-2">
+          <div className="grid gap-3 text-sm text-foreground">
+            <span>材质选择</span>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {PRODUCT_MATERIALS.map((material) => (
+                <label
+                  key={material}
+                  className="flex items-center gap-3 rounded-2xl border border-border bg-white/12 px-4 py-3"
+                >
+                  <input
+                    type="checkbox"
+                    checked={form.materials.includes(material)}
+                    onChange={() => toggleMaterial(material)}
+                  />
+                  <span>{material}</span>
+                </label>
+              ))}
+            </div>
+          </div>
 
-          <label className="grid gap-2 text-sm text-foreground">
-            尺寸
-            <input
-              className="field-input"
-              value={form.size}
-              onChange={(event) => updateField("size", event.target.value)}
-            />
-          </label>
+          <div className="grid gap-5">
+            <label className="grid gap-2 text-sm text-foreground">
+              尺寸
+              <input
+                className="field-input"
+                value={form.size}
+                onChange={(event) => updateField("size", event.target.value)}
+              />
+            </label>
 
-          <label className="grid gap-2 text-sm text-foreground">
-            颜色
-            <input
-              className="field-input"
-              value={form.color}
-              onChange={(event) => updateField("color", event.target.value)}
-            />
-          </label>
+            <label className="grid gap-2 text-sm text-foreground">
+              颜色
+              <input
+                className="field-input"
+                value={form.color}
+                onChange={(event) => updateField("color", event.target.value)}
+              />
+            </label>
+          </div>
         </div>
 
         <div className="mt-5 grid gap-5 md:grid-cols-[1fr_200px]">
