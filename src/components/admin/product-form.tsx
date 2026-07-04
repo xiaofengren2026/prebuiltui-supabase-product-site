@@ -25,13 +25,20 @@ type ProductFormProps = {
 
 type ProductInsert = Database["public"]["Tables"]["products"]["Insert"];
 type ProductUpdate = Database["public"]["Tables"]["products"]["Update"];
+type ProductMutationError = { message: string } | null;
+type ProductMutationTable = {
+  insert: (values: ProductInsert) => Promise<{ error: ProductMutationError }>;
+  update: (values: ProductUpdate) => {
+    eq: (column: "id", value: string) => Promise<{ error: ProductMutationError }>;
+  };
+};
 type LegacyProductPayload = Omit<ProductInsert, "category" | "materials"> & {
   category?: string | null;
 };
 type LegacyProductsTable = {
-  insert: (values: LegacyProductPayload) => Promise<{ error: { message: string } | null }>;
+  insert: (values: LegacyProductPayload) => Promise<{ error: ProductMutationError }>;
   update: (values: LegacyProductPayload) => {
-    eq: (column: string, value: string) => Promise<{ error: { message: string } | null }>;
+    eq: (column: "id", value: string) => Promise<{ error: ProductMutationError }>;
   };
 };
 
@@ -106,6 +113,7 @@ export function ProductForm({ mode, product }: ProductFormProps) {
 
     try {
       const supabase = createBrowserSupabaseClient();
+      const productsTable = supabase.from("products") as unknown as ProductMutationTable;
       const legacyProductsTable = supabase.from("products") as unknown as LegacyProductsTable;
       const cleanedMaterials = form.materials.filter(Boolean);
 
@@ -146,7 +154,7 @@ export function ProductForm({ mode, product }: ProductFormProps) {
       };
 
       if (mode === "create") {
-        let { error } = await supabase.from("products").insert(insertPayload);
+        let { error }: { error: ProductMutationError } = await productsTable.insert(insertPayload);
 
         if (error && shouldFallbackToLegacySchema(error.message)) {
           ({ error } = await legacyProductsTable.insert(legacyPayload));
@@ -160,7 +168,9 @@ export function ProductForm({ mode, product }: ProductFormProps) {
           return;
         }
       } else if (product?.id) {
-        let { error } = await supabase.from("products").update(updatePayload).eq("id", product.id);
+        let { error }: { error: ProductMutationError } = await productsTable
+          .update(updatePayload)
+          .eq("id", product.id);
 
         if (error && shouldFallbackToLegacySchema(error.message)) {
           ({ error } = await legacyProductsTable.update(legacyPayload).eq("id", product.id));
