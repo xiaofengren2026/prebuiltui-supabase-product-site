@@ -99,7 +99,7 @@ export function ProductForm({ mode, product }: ProductFormProps) {
       const supabase = createBrowserSupabaseClient();
       const cleanedMaterials = form.materials.filter(Boolean);
 
-      const payload: ProductInsert | ProductUpdate = {
+      const payload = {
         name: form.name.trim(),
         slug: slugPreview,
         price: Number(form.price || 0),
@@ -116,6 +116,8 @@ export function ProductForm({ mode, product }: ProductFormProps) {
         is_featured: form.is_featured,
         sort_order: Number(form.sort_order || 0),
       };
+      const insertPayload: ProductInsert = payload;
+      const updatePayload: ProductUpdate = payload;
 
       const legacyPayload: Record<string, unknown> = {
         name: form.name.trim(),
@@ -135,7 +137,7 @@ export function ProductForm({ mode, product }: ProductFormProps) {
       };
 
       if (mode === "create") {
-        let { error } = await supabase.from("products").insert(payload);
+        let { error } = await supabase.from("products").insert(insertPayload);
 
         if (error && shouldFallbackToLegacySchema(error.message)) {
           ({ error } = await supabase.from("products").insert(legacyPayload));
@@ -149,7 +151,7 @@ export function ProductForm({ mode, product }: ProductFormProps) {
           return;
         }
       } else if (product?.id) {
-        let { error } = await supabase.from("products").update(payload).eq("id", product.id);
+        let { error } = await supabase.from("products").update(updatePayload).eq("id", product.id);
 
         if (error && shouldFallbackToLegacySchema(error.message)) {
           ({ error } = await supabase.from("products").update(legacyPayload).eq("id", product.id));
