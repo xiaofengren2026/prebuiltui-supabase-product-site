@@ -1,10 +1,12 @@
-const PRODUCT_CATEGORY_OPTIONS = ["手链", "项链", "耳饰", "戒指", "摆件", "其他"] as const;
+const PRODUCT_CATEGORY_OPTIONS = ["手链", "项链", "耳饰", "戒指", "扇子", "其他小饰"] as const;
 const PRODUCT_MATERIAL_OPTIONS = ["珍珠", "银饰", "水晶", "编绳", "其他"] as const;
 
 const LEGACY_CATEGORY_ALIASES: Record<string, (typeof PRODUCT_CATEGORY_OPTIONS)[number]> = {
-  东方好物: "其他",
-  手镯: "其他",
-  挂件: "其他",
+  东方好物: "其他小饰",
+  手镯: "其他小饰",
+  挂件: "其他小饰",
+  摆件: "扇子",
+  其他: "其他小饰",
 };
 
 const LEGACY_MATERIAL_ALIASES: Record<string, (typeof PRODUCT_MATERIAL_OPTIONS)[number]> = {
@@ -21,7 +23,7 @@ export const PRODUCT_MATERIALS = PRODUCT_MATERIAL_OPTIONS;
 export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number];
 export type ProductMaterial = (typeof PRODUCT_MATERIALS)[number];
 
-export const DEFAULT_PRODUCT_CATEGORY: ProductCategory = "其他";
+export const DEFAULT_PRODUCT_CATEGORY: ProductCategory = "其他小饰";
 export const PRODUCT_CATEGORY_FILTERS = ["全部", ...PRODUCT_CATEGORY_OPTIONS] as const;
 export const PRODUCT_MATERIAL_FILTERS = ["全部", ...PRODUCT_MATERIAL_OPTIONS] as const;
 
