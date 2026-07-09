@@ -39,32 +39,6 @@ export function ProductsCatalog({ title, products, id }: ProductsCatalogProps) {
       <h2 className="font-serif text-3xl leading-tight text-foreground md:text-4xl">{title}</h2>
 
       <div className="mt-5 md:mt-6">
-        <p className="px-1 text-xs tracking-[0.16em] text-foreground-muted">材质</p>
-        <div className="hide-scrollbar mt-3 -mx-1 overflow-x-auto pb-1">
-          <div className="flex min-w-max gap-3 px-1">
-            {PRODUCT_MATERIAL_FILTERS.map((material) => {
-              const isActive = material === activeMaterial;
-
-              return (
-                <button
-                  key={material}
-                  type="button"
-                  onClick={() => setActiveMaterial(material)}
-                  className={`shrink-0 rounded-full border px-4 py-2 text-sm transition ${
-                    isActive
-                      ? "border-accent bg-accent text-button-text shadow-[0_10px_24px_rgba(86,110,98,0.16)]"
-                      : "border-border bg-white/14 text-foreground-muted hover:bg-white/24 hover:text-foreground"
-                  }`}
-                >
-                  {material}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-4">
         <p className="px-1 text-xs tracking-[0.16em] text-foreground-muted">分类</p>
         <div className="hide-scrollbar mt-3 -mx-1 overflow-x-auto pb-1">
           <div className="flex min-w-max gap-3 px-1">
@@ -83,6 +57,32 @@ export function ProductsCatalog({ title, products, id }: ProductsCatalogProps) {
                   }`}
                 >
                   {category}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <p className="px-1 text-xs tracking-[0.16em] text-foreground-muted">材质</p>
+        <div className="hide-scrollbar mt-3 -mx-1 overflow-x-auto pb-1">
+          <div className="flex min-w-max gap-3 px-1">
+            {PRODUCT_MATERIAL_FILTERS.map((material) => {
+              const isActive = material === activeMaterial;
+
+              return (
+                <button
+                  key={material}
+                  type="button"
+                  onClick={() => setActiveMaterial(material)}
+                  className={`shrink-0 rounded-full border px-4 py-2 text-sm transition ${
+                    isActive
+                      ? "border-accent bg-accent text-button-text shadow-[0_10px_24px_rgba(86,110,98,0.16)]"
+                      : "border-border bg-white/14 text-foreground-muted hover:bg-white/24 hover:text-foreground"
+                  }`}
+                >
+                  {material}
                 </button>
               );
             })}
